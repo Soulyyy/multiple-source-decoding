@@ -1,0 +1,3 @@
+rootProject.name = 'multiple-source-decoding'
+rootProject.buildFileName = 'build.gradle.kts'
+include 'backend'
