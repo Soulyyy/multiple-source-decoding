@@ -1,3 +1,4 @@
+
 allprojects {
     group = "com.multisource"
     version = "1.0-SNAPSHOT"
@@ -14,8 +15,12 @@ subprojects {
     }
 
     dependencies {
+        compile("org.springframework", "spring-context","5.0.3.RELEASE")
+
         testCompile("org.junit.platform", "junit-platform-commons", "1.0.3")
+        testCompile("org.junit.jupiter", "junit-jupiter-params", "5.0.3")
         testCompile("org.junit.jupiter", "junit-jupiter-api", "5.0.3")
+
     }
 
     configure<JavaPluginConvention> {
