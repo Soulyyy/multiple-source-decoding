@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/backend.iml" filepath="$PROJECT_DIR$/.idea/modules/backend.iml" group="backend" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/backend/backend.iml" filepath="$PROJECT_DIR$/.idea/modules/backend/backend.iml" group="backend" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/backend/backend_main.iml" filepath="$PROJECT_DIR$/.idea/modules/backend/backend_main.iml" group="backend" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/backend/backend_test.iml" filepath="$PROJECT_DIR$/.idea/modules/backend/backend_test.iml" group="backend" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/multiple-source-decoding.iml" filepath="$PROJECT_DIR$/.idea/modules/multiple-source-decoding.iml" />
