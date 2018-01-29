@@ -11,7 +11,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 public class BinaryReaderTest {
 
 
-  BinaryReader binaryReader = new BinaryReader();
+  private final BinaryReader binaryReader = new BinaryReader();
 
   static Collection<Object[]> data() {
     return Arrays.asList(new Object[][] {
