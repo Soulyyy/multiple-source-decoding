@@ -19,7 +19,7 @@ public class BinaryReaderTest {
         {"11100101a", "Input contains non binary characters: \"11100101a\""},
         {"", "Input is empty"},
         {"Lel, not binary at all", "Input contains non binary characters: \"Lel, not binary at all\""},
-        {"0101 01", "Input contains non binary characters: \"0101 01\""}
+        {"0101 01", "Input contains non binary characters: \"0101 01\""},
     });
   }
 
@@ -27,8 +27,8 @@ public class BinaryReaderTest {
 
   @DisplayName("Binary Input Test")
   @ParameterizedTest(name = "Parsed \"{0}\", expected \"{1}\"")
-  @MethodSource(value= "data")
-  public void testCorrectInput(String candidateString, String expected) {
+  @MethodSource(value = "data")
+  public void testBinaryInput(String candidateString, String expected) {
     try {
       assertEquals(expected, binaryReader.readString(candidateString));
     } catch (IllegalArgumentException e) {
