@@ -1,6 +1,9 @@
 package data;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Matrix {
 
@@ -16,6 +19,16 @@ public class Matrix {
 
   public int columns() {
     return matrix[0].length;
+  }
+
+  public List<Integer> getRow(int i) {
+    return Arrays.asList(matrix[i]);
+  }
+
+  public List<Integer> getColumn(int j) {
+    return IntStream.range(0, this.rows())
+        .mapToObj(i -> matrix[i][j])
+        .collect(Collectors.toList());
   }
 
   public Integer get(int i, int j) {

@@ -2,6 +2,8 @@ package functions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import data.Matrix;
 
@@ -18,15 +20,13 @@ public class Convolution {
     if (input.size() != matrix.rows()) {
       throw new IllegalArgumentException("Input length of " + input.size() + " does not match matrix row count " + matrix.rows());
     }
-    List<Integer> convolutedVector = new ArrayList<>();
-    for (int i = 0; i < matrix.columns(); i++) {
-      Integer element = 0;
-      for (int j = 0; j < matrix.rows(); j++) {
-        element += matrix.get(j, i) * input.get(j);
-      }
-      element = element % 2;
-      convolutedVector.add(element);
-    }
-    return convolutedVector;
+    return IntStream.range(0, matrix.columns())
+        .mapToObj(i -> IntStream.range(0, matrix.rows())
+            .mapToObj(j -> matrix.get(j, i) * input.get(j))
+            .reduce((a, b) -> a + b)
+            .orElse(0)
+        )
+        .map(i -> i % 2)
+        .collect(Collectors.toList());
   }
 }
