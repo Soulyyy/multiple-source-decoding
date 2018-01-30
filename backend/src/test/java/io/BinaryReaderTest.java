@@ -1,6 +1,7 @@
 package io;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static utils.TestUtils.splitString;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,9 +38,5 @@ public class BinaryReaderTest {
     catch (IllegalArgumentException e) {
       assertEquals(expected, e.getMessage());
     }
-  }
-
-  private List<Integer> splitString(String input) {
-    return Arrays.stream(input.split("")).mapToInt(Integer::parseInt).boxed().collect(Collectors.toList());
   }
 }

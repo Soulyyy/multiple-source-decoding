@@ -8,15 +8,21 @@ import data.Matrix;
 
 public class Convolution {
 
-  public List<Integer> convolute(List<Integer> input, Matrix matrix) {
+  private Matrix matrix;
+
+  public Convolution(Matrix matrix) {
+    this.matrix = matrix;
+  }
+
+  public List<Integer> convolve(List<Integer> input) {
     if (input.size() != matrix.rows()) {
       throw new IllegalArgumentException("Input length of " + input.size() + " does not match matrix row count " + matrix.rows());
     }
     List<Integer> convolutedVector = new ArrayList<>();
-    for (int i = 0; i < matrix.rows(); i++) {
+    for (int i = 0; i < matrix.columns(); i++) {
       Integer element = 0;
-      for (int j = 0; j < matrix.columns(); j++) {
-        element += matrix.get(i, j) * input.get(i);
+      for (int j = 0; j < matrix.rows(); j++) {
+        element += matrix.get(j, i) * input.get(j);
       }
       element = element % 2;
       convolutedVector.add(element);
