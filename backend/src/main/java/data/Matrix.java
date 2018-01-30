@@ -10,6 +10,18 @@ public class Matrix {
     this.matrix = matrix;
   }
 
+  public int rows() {
+    return matrix.length;
+  }
+
+  public int columns() {
+    return matrix[0].length;
+  }
+
+  public Integer get(int i, int j) {
+    return matrix[i][j];
+  }
+
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder("[");
@@ -19,7 +31,7 @@ public class Matrix {
       sb.append("\n");
       sb.append(" ");
     });
-    if(sb.length() > 1) {
+    if (sb.length() > 1) {
       sb.setLength(sb.length() - 2);
     }
     sb.append("]");

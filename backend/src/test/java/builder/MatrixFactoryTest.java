@@ -1,7 +1,6 @@
 package builder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -14,7 +13,7 @@ import data.Matrix;
 public class MatrixFactoryTest {
 
   static Collection<Object[]> data() {
-    return Arrays.asList(new Object[][] {
+    return Arrays.asList(new Object[][]{
         {"57", "[1,0,1\n 1,1,1]"},
         {"non-aligned-matrix", "Matrix size not uniform:\n[1,2,3\n 4,5\n 6,7,8,9]"},
         {"non-integer-matrix", "Failed to parse numeric value"},

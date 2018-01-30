@@ -10,22 +10,23 @@ public class MatrixFactory {
   public static Matrix build(String path) {
     try {
       return buildInternal(path);
-    } catch (NumberFormatException e) {
+    }
+    catch (NumberFormatException e) {
       throw new IllegalArgumentException("Failed to parse numeric value", e);
     }
   }
 
   private static Matrix buildInternal(String path) {
-    Integer[][] integerMatrix = FileUtils.getResourceAsStream(path).
-        map(s -> s.split(",")).
-        map(a -> Arrays.stream(a).
-            mapToInt(Integer::parseInt).
-            boxed().
-            toArray(Integer[]::new)).
-        toArray(Integer[][]::new);
+    Integer[][] integerMatrix = FileUtils.getResourceAsStream(path)
+        .map(s -> s.split(","))
+        .map(a -> Arrays.stream(a)
+            .mapToInt(Integer::parseInt)
+            .boxed()
+            .toArray(Integer[]::new))
+        .toArray(Integer[][]::new);
 
     Matrix matrix = new Matrix(integerMatrix);
-    if(!validateLength(integerMatrix)) {
+    if (!validateLength(integerMatrix)) {
       throw new IllegalArgumentException("Matrix size not uniform:\n" + matrix.toString(), null);
     }
     return matrix;
