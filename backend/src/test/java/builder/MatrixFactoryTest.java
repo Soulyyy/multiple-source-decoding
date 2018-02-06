@@ -25,7 +25,7 @@ public class MatrixFactoryTest {
   @DisplayName("Matrix creation tests")
   @ParameterizedTest(name = "Read file \"{0}}\" as a matix, expecting content {1}")
   @MethodSource(value = "data")
-  public void testMatrixFactoryInput(String path, String expected) {
+  public void testMatrixFactory(String path, String expected) {
     try {
       Matrix matrix = MatrixFactory.build(path);
       System.out.println(matrix.toString());
