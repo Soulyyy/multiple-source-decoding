@@ -26,13 +26,14 @@ public class TrellisFactory {
       nodeMap.put(node.getKey(), node);
     }
     Set<TrellisNode> sourceNodes = initialNodes;
-    for (int i = 1; i < matrices.size() + 1; i++) {
+    for (int i = 1; i < matrices.size(); i++) {
       int index = i % matrices.size();
       Matrix matrix = matrices.get(index);
       Set<TrellisNode> targetNodes = generateTrellisNodes(matrix);
       mapLayer(sourceNodes, targetNodes);
       sourceNodes = targetNodes;
     }
+    mapLayer(sourceNodes, initialNodes);
     return new Trellis(nodeMap);
   }
 
