@@ -1,12 +1,12 @@
 package functions;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-import data.Matrix;
 import data.trellis.Trellis;
 import data.trellis.TrellisNode;
 import utils.PermutationGenerator;
@@ -33,16 +33,61 @@ public class ViterbiDecoder {
         .mapToInt(List::size)
         .findFirst()
         .orElseThrow(() -> new IllegalStateException("Cannot infer encoded block length"));
+
+    List<List<Integer>> states = PermutationGenerator.generateAllBinaryPermutations(elementLength);
+
     int decodeLength = encoded.size() / encodedLength;
     assert encoded.size() % encodedLength == 0;
-    Integer[][] mostLikelyPath = new Integer[2][decodeLength];
-    Integer[][] mostLikelyResult = new Integer[2][decodeLength];
-    Arrays.stream(mostLikelyPath[1]).forEach(i -> i = 1);
-    Arrays.stream(mostLikelyResult[1]).forEach(i -> i = 0);
-
     Map<List<Integer>, Map<List<Integer>, Double>> transitionProbabilities = getTransitionMap(elementLength);
-    Map<List<Integer>, Map<List<Integer>, Double>> encodingProbabilities = getEncodingProbabilities(elementLength, errorRate);
-    return encoded;
+    Map<List<Integer>, Map<List<Integer>, Double>> encodingProbabilities = getEncodingProbabilities(elementLength, encodedLength, errorRate);
+
+    double[][] mostLikelyPath = new double[transitionProbabilities.size()][encoded.size() / encodedLength];
+    Integer[][] mostLikelyResult = new Integer[transitionProbabilities.size()][encoded.size() / encodedLength];
+    Arrays.stream(mostLikelyPath[0]).forEach(i -> i = 1.0);
+    IntStream.range(0, mostLikelyPath.length).forEach(i -> mostLikelyPath[i][0] = 1.0);
+    Arrays.stream(mostLikelyResult[0]).forEach(i -> i = 0);
+
+    for (int i = 1; i < encoded.size() / encodedLength; i++) {
+      List<Integer> encodedElement = encoded.subList(i * encodedLength, i * encodedLength + encodedLength);
+
+      for (int j = 0; j < Math.ceil(Math.pow(2, elementLength)); j++) {
+        //Compute max
+        double curMax = -1;
+        int argMax = -1;
+        List<Map.Entry<List<Integer>, Map<List<Integer>, Double>>> transitionEntryList = new ArrayList<>(transitionProbabilities.entrySet());
+        for (int k = 0; k < transitionProbabilities.size(); k++) {
+          double transitionProbability = transitionEntryList.get(k).getValue().get(states.get(j));
+          double encodingProbability = encodingProbabilities.get(states.get(j)).get(encodedElement);
+          double value = mostLikelyPath[k][i - 1] * transitionProbability * encodingProbability;
+          if (curMax < value) {
+            curMax = value;
+            argMax = k;
+          }
+        }
+        mostLikelyPath[j][i] = curMax;
+        mostLikelyResult[j][i] = argMax;
+      }
+    }
+    //Reconstruct
+    int lastElementIndex = -1;
+    double lastElementProbability = -1;
+    for (int i = 0; i < mostLikelyPath.length; i++) {
+      double probability = mostLikelyPath[i][mostLikelyPath.length - 1];
+      if (lastElementProbability < probability) {
+        lastElementProbability = probability;
+        lastElementIndex = mostLikelyResult[i][mostLikelyPath.length - 1];
+      }
+    }
+    Integer[] resultPath = new Integer[encoded.size() / encodedLength];
+    resultPath[resultPath.length - 1] = lastElementIndex;
+    for (int i = 2; i <= resultPath.length; i++) {
+      resultPath[resultPath.length - i] = mostLikelyResult[resultPath[resultPath.length - i + 1]][resultPath.length - i + 1];
+    }
+    List<Integer> decoded = new ArrayList<>();
+    for (int i = 0; i < resultPath.length; i++) {
+      decoded.addAll(states.get(resultPath[i]));
+    }
+    return decoded;
   }
 
   private Map<List<Integer>, Map<List<Integer>, Double>> getTransitionMap(int length) {
@@ -67,12 +112,14 @@ public class ViterbiDecoder {
     return transitionMap;
   }
 
-  private Map<List<Integer>, Map<List<Integer>, Double>> getEncodingProbabilities(int length, double errorRate) {
+  private Map<List<Integer>, Map<List<Integer>, Double>> getEncodingProbabilities(int length, int encodingLength, double errorRate) {
     Map<List<Integer>, Map<List<Integer>, Double>> encodingProbabilities = new HashMap<>();
 
     List<List<Integer>> allElements = PermutationGenerator.generateAllBinaryPermutations(length);
     for (int i = 0; i < allElements.size(); i++) {
+      List<List<Integer>> allEncodingPermutations = PermutationGenerator.generateAllBinaryPermutations(encodingLength);
       Map<List<Integer>, Double> elementEncodingProbabilities = new HashMap<>();
+      allEncodingPermutations.forEach(l -> elementEncodingProbabilities.put(l, 0.0));
       for (int j = 0; j < allElements.size(); j++) {
         long hammingDistance = computeHammingDistance(allElements.get(i), allElements.get(j));
         List<Integer> encodedValue = trellis.getNode(allElements.get(j)).getValue();
@@ -99,7 +146,6 @@ public class ViterbiDecoder {
       return Math.pow(1 - errorRate, length);
     }
     return 1 - Math.pow(1 - errorRate, length - hammingDistance);
-    //return Math.pow(errorRate, hammingDistance);
-    //return Math.pow((1 - errorRate), length - hammingDistance);
   }
+
 }

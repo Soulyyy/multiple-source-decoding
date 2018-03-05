@@ -29,7 +29,7 @@ public class ViterbiDecoderTest {
     Matrix matrix = MatrixFactory.build(matrixFileName);
     Trellis trellis = TrellisFactory.build(matrix);
     ViterbiDecoder decoder = new ViterbiDecoder(trellis);
-    List<Integer> decoded = decoder.decode(input, 0.1);
+    List<Integer> decoded = decoder.decode(input, 0.0);
     assertEquals(expectedOutput, decoded);
   }
 }
