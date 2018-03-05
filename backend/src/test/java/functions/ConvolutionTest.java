@@ -17,14 +17,14 @@ class ConvolutionTest {
 
   static Collection<Object[]> data() {
     return Arrays.asList(new Object[][]{
-        {"11", "010", "57"}
+        {"57", "11", "010"}
     });
   }
 
   @DisplayName("Binary Convolution Test")
-  @ParameterizedTest(name = "Input:\"{0}\", expected output:\"{1}\"")
+  @ParameterizedTest(name = "Input:\"{1}\", expected output:\"{2}\"")
   @MethodSource(value = "data")
-  public void convolve(String input, String expectedOutput, String matrixPath) {
+  public void convolve(String matrixPath, String input, String expectedOutput) {
     Matrix matrix = MatrixFactory.build(matrixPath);
     List<Integer> inputList = splitString(input);
     List<Integer> expectedList = splitString(expectedOutput);

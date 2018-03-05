@@ -14,11 +14,11 @@ import builder.TrellisFactory;
 import data.Matrix;
 import data.trellis.Trellis;
 
-public class ConvolutionalTrellisEncoderTest {
+public class ViterbiDecoderTest {
 
   static Collection<Object[]> data() {
     return Arrays.asList(new Object[][]{
-        {"57", Arrays.asList(1, 0, 0, 1, 1, 0, 1), Arrays.asList(0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1)},
+        {"57", Arrays.asList(0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1), Arrays.asList(1, 0, 0, 1, 1, 0, 1)},
     });
   }
 
@@ -28,8 +28,8 @@ public class ConvolutionalTrellisEncoderTest {
   public void testEncoder(String matrixFileName, List<Integer> input, List<Integer> expectedOutput) {
     Matrix matrix = MatrixFactory.build(matrixFileName);
     Trellis trellis = TrellisFactory.build(matrix);
-    ConvolutionalTrellisEncoder encoder = new ConvolutionalTrellisEncoder(trellis);
-    List<Integer> encoded = encoder.encode(input);
-    assertEquals(expectedOutput, encoded);
+    ViterbiDecoder decoder = new ViterbiDecoder(trellis);
+    List<Integer> decoded = decoder.decode(input, 0.1);
+    assertEquals(expectedOutput, decoded);
   }
 }
