@@ -1,21 +1,22 @@
 package data.trellis;
 
-import java.util.List;
 import java.util.Map;
+
+import data.State;
 
 public class Trellis {
 
-  private Map<List<Integer>, TrellisNode> nodes;
+  private Map<State, TrellisNode> nodes;
 
-  public Trellis(Map<List<Integer>, TrellisNode> nodes) {
+  public Trellis(Map<State, TrellisNode> nodes) {
     this.nodes = nodes;
   }
 
-  public TrellisNode getNode(List<Integer> key) {
+  public TrellisNode getNode(State key) {
     return nodes.get(key);
   }
 
-  public Map<List<Integer>, TrellisNode> getNodes() {
+  public Map<State, TrellisNode> getNodes() {
     return nodes;
   }
 

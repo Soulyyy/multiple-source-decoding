@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import data.State;
 import data.trellis.Trellis;
 import data.trellis.TrellisNode;
 
@@ -17,17 +18,17 @@ public class ConvolutionalTrellisEncoder {
     this.trellis = trellis;
   }
 
-  public List<Integer> encode(List<Integer> integers) {
+  public List<State> encode(List<Integer> integers) {
     int length = getTrellisNodeKeyLength();
     integers = prependZeros(integers, length);
-    TrellisNode curNode = trellis.getNode(integers.subList(0, length));
-    List<Integer> encoded = new ArrayList<>();
+    TrellisNode curNode = trellis.getNode(new State(integers.subList(0, length)));
+    List<State> encoded = new ArrayList<>();
     for (int i = 1; i < integers.size(); i++) {
-      encoded.addAll(curNode.getValue());
+      encoded.add(curNode.getValue());
       if (i + length > integers.size()) {
         break;
       }
-      curNode = curNode.getEdge(integers.subList(i, i + length));
+      curNode = curNode.getEdge(new State(integers.subList(i, i + length)));
       length = getTrellisNodeKeyLength(curNode);
     }
     return encoded;
@@ -42,7 +43,7 @@ public class ConvolutionalTrellisEncoder {
   private int getTrellisNodeKeyLength() {
     return trellis.getNodes().entrySet().stream()
         .map(Map.Entry::getKey)
-        .mapToInt(List::size)
+        .mapToInt(State::size)
         .findFirst()
         .orElseThrow(() -> new IllegalArgumentException("Didn't find key length"));
   }
@@ -51,7 +52,7 @@ public class ConvolutionalTrellisEncoder {
     return node.getEdges().entrySet().stream()
         .map(Map.Entry::getValue)
         .map(TrellisNode::getKey)
-        .mapToInt(List::size)
+        .mapToInt(State::size)
         .findFirst()
         .orElseThrow(() -> new IllegalArgumentException("Didn't find key length"));
   }

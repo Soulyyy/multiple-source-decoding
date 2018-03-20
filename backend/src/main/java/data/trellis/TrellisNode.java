@@ -5,15 +5,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import data.State;
+import lombok.NonNull;
+
 public class TrellisNode {
 
-  private List<Integer> key;
+  @NonNull
+  private State key;
 
-  private List<Integer> value;
+  @NonNull
+  private State value;
 
-  private Map<List<Integer>, TrellisNode> edges;
+  private Map<State, TrellisNode> edges;
 
-  public TrellisNode(List<Integer> key, List<Integer> value) {
+  public TrellisNode(State key, State value) {
     this.key = key;
     this.value = value;
     this.edges = new HashMap<>();
@@ -23,30 +28,28 @@ public class TrellisNode {
     edges.put(node.getKey(), node);
   }
 
-  public Map<List<Integer>, TrellisNode> getEdges() {
+  public Map<State, TrellisNode> getEdges() {
     return edges;
   }
 
-  public TrellisNode getEdge(List<Integer> key)  {
+  public TrellisNode getEdge(State key) {
     return edges.get(key);
   }
 
-  public List<Integer> getKey() {
+  public State getKey() {
     return key;
   }
 
-  public List<Integer> getValue() {
+  public State getValue() {
     return value;
   }
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder("(");
-    key.forEach(sb::append);
-    sb.append(") -> (");
-    value.forEach(sb::append);
-    sb.append(")");
-    return sb.toString();
+    return "(" + key +
+        ") -> (" +
+        value +
+        ")";
   }
 
   @Override

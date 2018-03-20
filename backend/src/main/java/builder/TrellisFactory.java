@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import data.Matrix;
+import data.State;
 import data.trellis.Trellis;
 import data.trellis.TrellisNode;
 import functions.Convolution;
@@ -21,7 +22,7 @@ public class TrellisFactory {
 
   public static Trellis build(List<Matrix> matrices) {
     Set<TrellisNode> initialNodes = generateTrellisNodes(matrices.get(0));
-    Map<List<Integer>, TrellisNode> nodeMap = new HashMap<>();
+    Map<State, TrellisNode> nodeMap = new HashMap<>();
     for (TrellisNode node : initialNodes) {
       nodeMap.put(node.getKey(), node);
     }
@@ -44,7 +45,8 @@ public class TrellisFactory {
 
   private static Set<TrellisNode> generateLayer(Matrix matrix, Convolution convolution) {
     return PermutationGenerator.generateAllBinaryPermutations(matrix.rows()).stream()
-        .map(i -> new TrellisNode(i, convolution.convolve(i)))
+        .map(State::new)
+        .map(i -> new TrellisNode(i, new State(convolution.convolve(i.asList()))))
         .collect(Collectors.toSet());
   }
 
@@ -55,19 +57,19 @@ public class TrellisFactory {
   }
 
   private static boolean isElementMatch(TrellisNode sourceNode, TrellisNode targetNode) {
-    List<Integer> sourceKey = sourceNode.getKey();
-    List<Integer> targetKey = targetNode.getKey();
+    State sourceKey = sourceNode.getKey();
+    State targetKey = targetNode.getKey();
     //If source is smaller than target max, match everything
     if (targetKey.size() - 1 > sourceKey.size()) {
-      List<Integer> compareKey = targetKey.subList(targetKey.size() - 1 - sourceKey.size(), targetKey.size() - 1);
+      List<Integer> compareKey = targetKey.asList().subList(targetKey.size() - 1 - sourceKey.size(), targetKey.size() - 1);
       return sourceKey.equals(compareKey);
     }
     else if (targetKey.size() == 1) {
       return true;
     }
     else {
-      List<Integer> targetCompareKey = targetKey.subList(0, targetKey.size() - 1);
-      List<Integer> sourceCompareKey = sourceKey.subList(sourceKey.size() - targetCompareKey.size(), sourceKey.size());
+      List<Integer> targetCompareKey = targetKey.asList().subList(0, targetKey.size() - 1);
+      List<Integer> sourceCompareKey = sourceKey.asList().subList(sourceKey.size() - targetCompareKey.size(), sourceKey.size());
       return sourceCompareKey.equals(targetCompareKey);
     }
   }
