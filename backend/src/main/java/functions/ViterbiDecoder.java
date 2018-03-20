@@ -7,11 +7,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import data.States;
+import data.ViterbiStates;
 import data.trellis.Trellis;
 import data.trellis.TrellisNode;
 import utils.PermutationGenerator;
 
 public class ViterbiDecoder {
+
+  private static final Logger log = LoggerFactory.getLogger("Viterbi");
 
   private final Trellis trellis;
 
@@ -19,14 +26,14 @@ public class ViterbiDecoder {
     this.trellis = trellis;
   }
 
-  public List<Integer> decode(List<Integer> encoded, double errorRate) {
+  public List<Integer> decode(ViterbiStates viterbiStates, List<Integer> encoded, double errorRate) {
+    log.trace("Starting decoding with vector {} and error rate {}", encoded, errorRate);
     int encodedLength = trellis.getNodes().entrySet().stream()
         .map(Map.Entry::getValue)
         .map(TrellisNode::getValue)
         .mapToInt(List::size)
         .findFirst()
         .orElseThrow(() -> new IllegalStateException("Cannot infer encoded block length"));
-
     int elementLength = trellis.getNodes().entrySet().stream()
         .map(Map.Entry::getValue)
         .map(TrellisNode::getKey)
@@ -34,12 +41,17 @@ public class ViterbiDecoder {
         .findFirst()
         .orElseThrow(() -> new IllegalStateException("Cannot infer encoded block length"));
 
+    log.trace("Encoded length is {}", encodedLength);
+    log.trace("Element length is {}", elementLength);
     List<List<Integer>> states = PermutationGenerator.generateAllBinaryPermutations(elementLength);
 
     int decodeLength = encoded.size() / encodedLength;
     assert encoded.size() % encodedLength == 0;
     Map<List<Integer>, Map<List<Integer>, Double>> transitionProbabilities = getTransitionMap(elementLength);
     Map<List<Integer>, Map<List<Integer>, Double>> encodingProbabilities = getEncodingProbabilities(elementLength, encodedLength, errorRate);
+
+    log.trace("Transition probabilities: {}", transitionProbabilities);
+    log.trace("Encoding probabilities: {}", encodingProbabilities);
 
     double[][] mostLikelyPath = new double[transitionProbabilities.size()][encoded.size() / encodedLength];
     Integer[][] mostLikelyResult = new Integer[transitionProbabilities.size()][encoded.size() / encodedLength];
@@ -55,6 +67,7 @@ public class ViterbiDecoder {
         double curMax = -1;
         int argMax = -1;
         List<Map.Entry<List<Integer>, Map<List<Integer>, Double>>> transitionEntryList = new ArrayList<>(transitionProbabilities.entrySet());
+        log.trace("Transition entry list is: {}", transitionEntryList);
         for (int k = 0; k < transitionProbabilities.size(); k++) {
           double transitionProbability = transitionEntryList.get(k).getValue().get(states.get(j));
           double encodingProbability = encodingProbabilities.get(states.get(j)).get(encodedElement);
