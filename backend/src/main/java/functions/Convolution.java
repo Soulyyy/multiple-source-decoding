@@ -16,12 +16,12 @@ public class Convolution {
   }
 
   public List<Integer> convolve(List<Integer> input) {
-    if (input.size() != matrix.rows()) {
-      throw new IllegalArgumentException("Input length of " + input.size() + " does not match matrix row count " + matrix.rows());
+    if (input.size() != matrix.columns()) {
+      throw new IllegalArgumentException("Input length of " + input.size() + " does not match matrix column count " + matrix.columns());
     }
-    return IntStream.range(0, matrix.columns())
-        .mapToObj(i -> IntStream.range(0, matrix.rows())
-            .mapToObj(j -> matrix.get(j, i) * input.get(j))
+    return IntStream.range(0, matrix.rows())
+        .mapToObj(i -> IntStream.range(0, matrix.columns())
+            .mapToObj(j -> matrix.get(i, j) * input.get(j))
             .reduce((a, b) -> a + b)
             .orElse(0)
         )

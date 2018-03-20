@@ -10,7 +10,6 @@ public class Matrix {
   private final Integer[][] matrix;
 
   public Matrix(Integer[][] matrix) {
-    assert Arrays.stream(matrix).mapToInt(i -> i.length).distinct().count() == 1;
     this.matrix = matrix;
   }
 

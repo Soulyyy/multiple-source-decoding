@@ -12,12 +12,14 @@ import data.trellis.Trellis;
 
 public class EncodingMapGenerator {
 
+  private static final double ERROR_CORRECTION_VALUE = 0.001;
+
   public static ProbabilityMap get(StateList transitionStates, StateList encodingStates, Trellis trellis, double errorRate) {
     Map<State, Map<State, Double>> encodingProbabilities = new HashMap<>();
 
     for (int i = 0; i < transitionStates.size(); i++) {
       Map<State, Double> elementEncodingProbabilities = new HashMap<>();
-      encodingStates.getStates().forEach(l -> elementEncodingProbabilities.put(l, 0.0));
+      encodingStates.getStates().forEach(l -> elementEncodingProbabilities.put(l, ERROR_CORRECTION_VALUE));
       for (int j = 0; j < transitionStates.size(); j++) {
         long hammingDistance = computeHammingDistance(encodingStates.getState(i).asList(), encodingStates.getState(j).asList());
         State encodedValue = trellis.getNode(transitionStates.getState(j)).getValue();
@@ -36,6 +38,6 @@ public class EncodingMapGenerator {
     else if (hammingDistance == 0) {
       return Math.pow(1 - errorRate, length);
     }
-    return 1 - Math.pow(1 - errorRate, length - hammingDistance);
+    return 1 - Math.pow(1 - errorRate, length - hammingDistance)+ ERROR_CORRECTION_VALUE;
   }
 }

@@ -10,6 +10,8 @@ import data.StateList;
 
 public class TransitionMapGenerator {
 
+  private static final double ERROR_CORRECTION_VALUE = 0.001;
+
   public static ProbabilityMap get(StateList transitionStates) {
     Map<State, Map<State, Double>> transitionMap = new HashMap<>();
     for (int i = 0; i < transitionStates.size(); i++) {
@@ -23,7 +25,7 @@ public class TransitionMapGenerator {
           elementTransitionMap.put(transitionElement, (1.0 * (transitionElementPrefix.size() + 1)) / transitionStates.size());
         }
         else {
-          elementTransitionMap.put(transitionElement, 0.0);
+          elementTransitionMap.put(transitionElement, ERROR_CORRECTION_VALUE);
         }
         transitionMap.put(element, elementTransitionMap);
       }

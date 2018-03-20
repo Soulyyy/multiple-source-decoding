@@ -17,6 +17,8 @@ public class ViterbiDecoder {
 
   private static final Logger log = LoggerFactory.getLogger("Viterbi");
 
+  private static final double ERROR_CORRECTION_VALUE = 0.001;
+
   private final Trellis trellis;
 
   public ViterbiDecoder(Trellis trellis) {
@@ -44,14 +46,15 @@ public class ViterbiDecoder {
     IntStream.range(0, mostLikelyPath.length).forEach(i -> mostLikelyPath[i][0] = 1.0);
     Arrays.stream(mostLikelyResult[0]).forEach(i -> i = 0);
 
+    List<Map.Entry<State, Map<State, Double>>> transitionEntryList = new ArrayList<>(transitionProbabilities.get().entrySet());
+    log.trace("Transition entry list is: {}", transitionEntryList);
+
     for (int i = 1; i < encoded.size(); i++) {
       State encodedElement = encoded.get(i);
       for (int j = 0; j < Math.ceil(Math.pow(2, transitionLength)); j++) {
         //Compute max
         double curMax = -1;
         int argMax = -1;
-        List<Map.Entry<State, Map<State, Double>>> transitionEntryList = new ArrayList<>(transitionProbabilities.get().entrySet());
-        log.trace("Transition entry list is: {}", transitionEntryList);
         for (int k = 0; k < transitionProbabilities.size(); k++) {
           double transitionProbability = transitionEntryList.get(k).getValue().get(transitionStates.getState(j));
           double encodingProbability = encodingProbabilities.getProbabilityEntry(transitionStates.getState(j)).get(encodedElement);
@@ -80,6 +83,8 @@ public class ViterbiDecoder {
     for (int i = 2; i <= resultPath.length; i++) {
       resultPath[resultPath.length - i] = mostLikelyResult[resultPath[resultPath.length - i + 1]][resultPath.length - i + 1];
     }
+    log.trace("Most likely path probabilities: {}", Arrays.deepToString(mostLikelyPath));
+    log.info("Got result path of: {}", Arrays.toString(resultPath));
     List<Integer> decoded = new ArrayList<>();
     for (int i = 0; i < resultPath.length; i++) {
       decoded.addAll(transitionStates.getState(resultPath[i]).asList());

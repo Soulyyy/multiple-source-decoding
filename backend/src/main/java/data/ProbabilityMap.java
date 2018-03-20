@@ -22,4 +22,9 @@ public class ProbabilityMap {
   public int size() {
     return probabilityMap.size();
   }
+
+  @Override
+  public String toString() {
+    return probabilityMap.toString();
+  }
 }

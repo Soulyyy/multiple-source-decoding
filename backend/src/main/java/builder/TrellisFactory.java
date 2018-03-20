@@ -44,7 +44,7 @@ public class TrellisFactory {
   }
 
   private static Set<TrellisNode> generateLayer(Matrix matrix, Convolution convolution) {
-    return PermutationGenerator.generateAllBinaryPermutations(matrix.rows()).stream()
+    return PermutationGenerator.generateAllBinaryPermutations(matrix.columns()).stream()
         .map(State::new)
         .map(i -> new TrellisNode(i, new State(convolution.convolve(i.asList()))))
         .collect(Collectors.toSet());

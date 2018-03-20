@@ -28,7 +28,6 @@ public class MatrixFactoryTest {
   public void testMatrixFactory(String path, String expected) {
     try {
       Matrix matrix = MatrixFactory.build(path);
-      System.out.println(matrix.toString());
       assertEquals(expected, matrix.toString());
     }
     catch (IllegalArgumentException e) {
