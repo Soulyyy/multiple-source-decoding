@@ -20,11 +20,11 @@ public class EncodingMapGenerator {
     for (int i = 0; i < encodingStates.size(); i++) {
       Map<State, Double> elementEncodingProbabilities = new HashMap<>();
       transitionStates.getStates().forEach(l -> elementEncodingProbabilities.put(l, ERROR_CORRECTION_VALUE));
-      for (int j = 0; j < encodingProbabilities.size(); j++) {
-        long hammingDistance = computeHammingDistance(encodingStates.getState(i).asList(), encodingStates.getState(j).asList());
+      for (int j = 0; j < transitionStates.size(); j++) {
         State encodedValue = trellis.getNode(encodingStates.getState(i)).getValue();
+        long hammingDistance = computeHammingDistance(encodedValue.asList(), transitionStates.getState(j).asList());
         double encodingProbability = computeEncodingProbability(transitionStates.getState(j).size(), hammingDistance, errorRate);
-        elementEncodingProbabilities.put(encodedValue, encodingProbability);
+        elementEncodingProbabilities.put(transitionStates.getState(j), encodingProbability);
       }
       encodingProbabilities.put(encodingStates.getState(i), elementEncodingProbabilities);
     }

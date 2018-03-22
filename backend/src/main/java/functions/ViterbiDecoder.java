@@ -51,13 +51,13 @@ public class ViterbiDecoder {
 
     for (int i = 1; i < encoded.size(); i++) {
       State encodedElement = encoded.get(i);
-      for (int j = 0; j < Math.ceil(Math.pow(2, transitionLength)); j++) {
+      for (int j = 0; j < transitionStates.size(); j++) {
         //Compute max
         double curMax = -1;
         int argMax = -1;
         for (int k = 0; k < transitionProbabilities.size(); k++) {
           double transitionProbability = transitionEntryList.get(k).getValue().get(transitionStates.getState(j));
-          double encodingProbability = encodingProbabilities.getProbabilityEntry(transitionStates.getState(j)).get(encodedElement);
+          double encodingProbability = encodingProbabilities.getProbabilityEntry(encodedElement).get(transitionEntryList.get(k).getKey());
           double value = mostLikelyPath[k][i - 1] * transitionProbability * encodingProbability;
           if (curMax < value) {
             curMax = value;
