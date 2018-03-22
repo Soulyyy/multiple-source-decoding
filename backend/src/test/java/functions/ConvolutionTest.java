@@ -17,8 +17,8 @@ class ConvolutionTest {
 
   static Collection<Object[]> data() {
     return Arrays.asList(new Object[][]{
-        {"57", "000", "00"},
-        {"57", "010", "01"}
+        {"57.mat", "000", "00"},
+        {"57.mat", "010", "01"}
     });
   }
 

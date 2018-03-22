@@ -3,7 +3,6 @@ package functions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static utils.TestUtils.createStateList;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -21,7 +20,7 @@ public class ConvolutionalTrellisEncoderTest {
 
   static Collection<Object[]> data() {
     return Arrays.asList(new Object[][]{
-        {"57", Arrays.asList(1, 0, 0, 1, 1, 0, 1), createStateList(Arrays.asList(0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0), 2)},
+        {"57.mat", Arrays.asList(1, 0, 0, 1, 1, 0, 1), createStateList(Arrays.asList(0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0), 2)},
     });
   }
 

@@ -20,7 +20,7 @@ public class ViterbiDecoderTest {
 
   static Collection<Object[]> data() {
     return Arrays.asList(new Object[][]{
-        {"57", createStateList(Arrays.asList(0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1), 3), Arrays.asList(1, 0, 0, 1, 1, 0, 1)},
+        {"57.mat", createStateList(Arrays.asList(0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1), 3), Arrays.asList(1, 0, 0, 1, 1, 0, 1)},
     });
   }
 
