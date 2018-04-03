@@ -10,7 +10,7 @@ import data.StateList;
 
 public class TransitionMapGenerator {
 
-  private static final double ERROR_CORRECTION_VALUE = 0.001;
+  private static final double ERROR_CORRECTION_VALUE = 0.000;
 
   public static ProbabilityMap get(StateList transitionStates) {
     Map<State, Map<State, Double>> transitionMap = new HashMap<>();

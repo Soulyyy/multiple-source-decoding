@@ -12,7 +12,7 @@ import data.trellis.Trellis;
 
 public class EncodingMapGenerator {
 
-  private static final double ERROR_CORRECTION_VALUE = 0.001;
+  private static final double ERROR_CORRECTION_VALUE = 0.000;
 
   public static ProbabilityMap get(StateList transitionStates, StateList encodingStates, Trellis trellis, double errorRate) {
     Map<State, Map<State, Double>> encodingProbabilities = new HashMap<>();
@@ -36,8 +36,8 @@ public class EncodingMapGenerator {
       return Math.pow(errorRate, hammingDistance) + ERROR_CORRECTION_VALUE;
     }
     else if (hammingDistance == 0) {
-      return Math.pow(1 - errorRate, length) +ERROR_CORRECTION_VALUE;
+      return Math.pow(1 - errorRate, length) + ERROR_CORRECTION_VALUE;
     }
-    return 1 - Math.pow(1 - errorRate, length - hammingDistance)+ ERROR_CORRECTION_VALUE;
+    return 1 - Math.pow(1 - errorRate, length - hammingDistance) + ERROR_CORRECTION_VALUE;
   }
 }
