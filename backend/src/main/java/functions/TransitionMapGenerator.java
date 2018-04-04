@@ -33,7 +33,7 @@ public class TransitionMapGenerator {
     return new ProbabilityMap(transitionMap);
   }
 
-  public static ProbabilityMap getNew(StateList transitionStates, double errorRate) {
+  public static ProbabilityMap getNew(StateList transitionStates) {
     Map<State, Map<State, Double>> transitionMap = new HashMap<>();
     for (int i = 0; i < transitionStates.size(); i++) {
       Map<State, Double> elementTransitionMap = new HashMap<>();
@@ -41,10 +41,10 @@ public class TransitionMapGenerator {
       for (int j = 0; j < transitionStates.size(); j++) {
         State transitionElement = transitionStates.getState(j);
         if (element.equals(transitionElement)) {
-          elementTransitionMap.put(transitionElement, 1 - errorRate);
+          elementTransitionMap.put(transitionElement, 0.5);
         }
         else {
-          elementTransitionMap.put(transitionElement, errorRate);
+          elementTransitionMap.put(transitionElement, 0.5);
         }
       }
       transitionMap.put(element, elementTransitionMap);

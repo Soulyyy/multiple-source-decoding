@@ -26,14 +26,14 @@ public class ViterbiDecoder {
   public List<Integer> decode(StateList transitionStates, StateList encodingStates, List<State> encoded, double errorRate) {
     log.trace("Starting decoding with vector {} and error rate {}", encoded, errorRate);
 
-    ProbabilityMap transitionProbabilities = TransitionMapGenerator.getNew(transitionStates, errorRate);
+    ProbabilityMap transitionProbabilities = TransitionMapGenerator.getNew(transitionStates);
     ProbabilityMap encodingProbabilities = TemporaryEncodingMapGenerator.get(transitionStates, encodingStates, trellis, errorRate);
 
     log.trace("Transition probabilities: {}", transitionProbabilities);
     log.trace("Encoding probabilities: {}", encodingProbabilities);
 
-    double[][] mostLikelyPath = initializeProbabilityPathMatrix(encodingStates, encoded.size(), errorRate);
-    Integer[][] mostLikelyResult = new Integer[encodingProbabilities.size()][encoded.size()];
+    double[][] mostLikelyPath = initializeProbabilityPathMatrix(transitionStates, encoded.size());
+    Integer[][] mostLikelyResult = new Integer[transitionStates.size()][encoded.size()];
     Arrays.stream(mostLikelyResult[0]).forEach(i -> i = 0);
 
     List<Map.Entry<State, Map<State, Double>>> transitionEntryList = new ArrayList<>(transitionProbabilities.get().entrySet());
@@ -48,8 +48,8 @@ public class ViterbiDecoder {
 
   }
 
-  private double[][] initializeProbabilityPathMatrix(StateList transitionStates, int encodedLength, double errorRate) {
-    ProbabilityMap transitionProbabilities = TransitionMapGenerator.getNew(transitionStates, errorRate);
+  private double[][] initializeProbabilityPathMatrix(StateList transitionStates, int encodedLength) {
+    ProbabilityMap transitionProbabilities = TransitionMapGenerator.getNew(transitionStates);
     double[][] mostLikelyPath = new double[transitionProbabilities.size()][encodedLength];
     Arrays.stream(mostLikelyPath[0]).forEach(i -> i = 1.0);
     IntStream.range(0, mostLikelyPath.length).forEach(i -> mostLikelyPath[i][0] = 1.0);
