@@ -31,7 +31,7 @@ public class ViterbiDecoderTest {
     Matrix matrix = MatrixFactory.build(matrixFileName);
     Trellis trellis = TrellisFactory.build(matrix);
     ViterbiDecoder decoder = new ViterbiDecoder(trellis);
-    List<Integer> decoded = decoder.decode(StatesGenerator.generateStates(2), StatesGenerator.generateStates(1), input, 0.0);
+    List<Integer> decoded = decoder.decode(StatesGenerator.generateStates(1), StatesGenerator.generateStates(2), input, 0.0);
     assertEquals(expectedOutput, decoded);
   }
 }

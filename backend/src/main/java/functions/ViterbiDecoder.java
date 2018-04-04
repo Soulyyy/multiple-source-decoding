@@ -26,14 +26,14 @@ public class ViterbiDecoder {
   public List<Integer> decode(StateList transitionStates, StateList encodingStates, List<State> encoded, double errorRate) {
     log.trace("Starting decoding with vector {} and error rate {}", encoded, errorRate);
 
-    ProbabilityMap transitionProbabilities = TransitionMapGenerator.get(transitionStates);
+    ProbabilityMap transitionProbabilities = TransitionMapGenerator.getNew(transitionStates, errorRate);
     ProbabilityMap encodingProbabilities = TemporaryEncodingMapGenerator.get(transitionStates, encodingStates, trellis, errorRate);
 
     log.trace("Transition probabilities: {}", transitionProbabilities);
     log.trace("Encoding probabilities: {}", encodingProbabilities);
 
-    double[][] mostLikelyPath = initializeProbabilityPathMatrix(transitionStates, encoded.size());
-    Integer[][] mostLikelyResult = new Integer[transitionProbabilities.size()][encoded.size()];
+    double[][] mostLikelyPath = initializeProbabilityPathMatrix(encodingStates, encoded.size(), errorRate);
+    Integer[][] mostLikelyResult = new Integer[encodingProbabilities.size()][encoded.size()];
     Arrays.stream(mostLikelyResult[0]).forEach(i -> i = 0);
 
     List<Map.Entry<State, Map<State, Double>>> transitionEntryList = new ArrayList<>(transitionProbabilities.get().entrySet());
@@ -48,8 +48,8 @@ public class ViterbiDecoder {
 
   }
 
-  private double[][] initializeProbabilityPathMatrix(StateList transitionStates, int encodedLength) {
-    ProbabilityMap transitionProbabilities = TransitionMapGenerator.get(transitionStates);
+  private double[][] initializeProbabilityPathMatrix(StateList transitionStates, int encodedLength, double errorRate) {
+    ProbabilityMap transitionProbabilities = TransitionMapGenerator.getNew(transitionStates, errorRate);
     double[][] mostLikelyPath = new double[transitionProbabilities.size()][encodedLength];
     Arrays.stream(mostLikelyPath[0]).forEach(i -> i = 1.0);
     IntStream.range(0, mostLikelyPath.length).forEach(i -> mostLikelyPath[i][0] = 1.0);
@@ -64,13 +64,13 @@ public class ViterbiDecoder {
                                    double[][] mostLikelyPath,
                                    Integer[][] mostLikelyResult,
                                    int i) {
-    for (int j = 0; j < encodingProbabilities.size(); j++) {
+    for (int j = 0; j < transitionProbabilities.size(); j++) {
       //Compute max
       double curMax = -1;
       int argMax = -1;
-      for (int k = 0; k < encodingProbabilities.size(); k++) {
-        double transitionProbability = encodingEntryList.get(j).getValue().get(transitionStates.getState(k));
-        double encodingProbability = encodingProbabilities.getProbabilityEntry(encodedElement).get(encodingEntryList.get(j).getKey());
+      for (int k = 0; k < transitionProbabilities.size(); k++) {
+        double transitionProbability = transitionProbabilities.getProbabilityEntry(transitionStates.getState(k)).get(transitionStates.getState(j));
+        double encodingProbability = encodingProbabilities.getProbabilityEntry(transitionStates.getState(j)).get(encodedElement);
         double value = mostLikelyPath[k][i - 1] * transitionProbability * encodingProbability;
         if (curMax < value) {
           curMax = value;

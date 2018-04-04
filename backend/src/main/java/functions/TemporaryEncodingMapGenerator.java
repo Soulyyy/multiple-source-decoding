@@ -2,8 +2,6 @@ package functions;
 
 import static utils.VectorUtils.computeHammingDistance;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,19 +16,21 @@ import data.trellis.TrellisNode;
 
 public class TemporaryEncodingMapGenerator {
 
-  public static ProbabilityMap get(StateList transitionStates, StateList encodingStates, Trellis trellis, double errorRate) {
+  public static ProbabilityMap get(StateList initialStates, StateList observationStates, Trellis trellis, double errorRate) {
     Map<State, Map<State, Double>> encodingProbabilities = new HashMap<>();
 
-    for (int i = 0; i < transitionStates.size(); i++) {
+    for (int i = 0; i < initialStates.size(); i++) {
       Map<State, Double> elementEncodingProbabilities = new HashMap<>();
-      for (int j = 0; j < encodingStates.size(); j++) {
-        Set<State> statesWithSuffix = getStatesWithSuffix(trellis, encodingStates.getState(j).asList());
-        State encodedValue = trellis.getNode(encodingStates.getState(j)).getValue();
-        long hammingDistance = computeHammingDistance(encodedValue.asList(), transitionStates.getState(i).asList());
-        double encodingProbability = computeEncodingProbability(transitionStates.getState(i).size(), hammingDistance, errorRate);
-        elementEncodingProbabilities.put(encodingStates.getState(j), encodingProbability);
+      for (int j = 0; j < observationStates.size(); j++) {
+        Set<State> encodedValues = getStatesWithSuffix(trellis, observationStates.getState(j).asList());
+        double encodingProbability = 0.0;
+        for(State encodedValue : encodedValues) {
+          long hammingDistance = computeHammingDistance(encodedValue.asList(), observationStates.getState(i).asList());
+          encodingProbability += computeEncodingProbability(initialStates.getState(i).size(), hammingDistance, errorRate);
+        }
+        elementEncodingProbabilities.put(observationStates.getState(j), encodingProbability / encodedValues.size());
       }
-      encodingProbabilities.put(transitionStates.getState(i), elementEncodingProbabilities);
+      encodingProbabilities.put(initialStates.getState(i), elementEncodingProbabilities);
     }
 
     return new ProbabilityMap(encodingProbabilities);
