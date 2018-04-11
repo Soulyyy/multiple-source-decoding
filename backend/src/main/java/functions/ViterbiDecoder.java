@@ -1,5 +1,7 @@
 package functions;
 
+import static utils.VectorUtils.computeHammingDistance;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,6 +14,7 @@ import data.ProbabilityMap;
 import data.State;
 import data.StateList;
 import data.trellis.Trellis;
+import data.trellis.TrellisNode;
 
 public class ViterbiDecoder {
 
@@ -24,6 +27,48 @@ public class ViterbiDecoder {
   }
 
   public List<Integer> decode(StateList transitionStates, StateList encodingStates, List<State> encoded, double errorRate) {
+    Integer[][] mostLikelyPath = new Integer[encodingStates.size()][encoded.size()];
+    Integer[][] mostLikelyResult = new Integer[encodingStates.size()][encoded.size()];
+    Arrays.stream(mostLikelyResult[0]).forEach(i -> i = 0);
+    StatePointer[][] statePointers = new StatePointer[encodingStates.size()][encoded.size()];
+    StatePointer[0][0] = new StatePointer(0, 0)
+    for (int i = 0; i < encoded.size(); i++) {
+      State state = encoded.get(i);
+      int j = 0;
+      for (Map.Entry<State, TrellisNode> node : trellis.getNodes().entrySet()) {
+        statePointers[i][j]
+        System.out.println(computeDistance(state.asList(), node.getValue().getValue().asList(), errorRate) + " " + state.toString() + " " + node.getValue().getValue().toString());
+        j++;
+      }
+    }
+    return null;
+  }
+
+  private double computeDistance(List<Integer> state, List<Integer> expected, double errorRate) {
+    long hammingDistance = computeHammingDistance(state, expected);
+    return hammingDistance * (1 - errorRate) + errorRate * (state.size() - hammingDistance);
+  }
+
+  private void updateStatePointer(StatePointer[][] statePointers, double distance)
+
+  private class StatePointer {
+    int index;
+    long distance;
+
+    public StatePointer(int distance, int index) {
+      this.distance = distance;
+      this.index = index;
+    }
+
+    public void update(long distance, int index) {
+      if (this.distance > distance) {
+        this.distance = distance;
+        this.index = index;
+      }
+    }
+  }
+
+  /*public List<Integer> decode(StateList transitionStates, StateList encodingStates, List<State> encoded, double errorRate) {
     log.trace("Starting decoding with vector {} and error rate {}", encoded, errorRate);
 
     ProbabilityMap transitionProbabilities = TransitionMapGenerator.getNew(transitionStates);
@@ -46,7 +91,7 @@ public class ViterbiDecoder {
     }
     return reconstructAnswer(mostLikelyPath, mostLikelyResult, transitionStates, encoded.size());
 
-  }
+  }*/
 
   private double[][] initializeProbabilityPathMatrix(StateList transitionStates, int encodedLength) {
     ProbabilityMap transitionProbabilities = TransitionMapGenerator.getNew(transitionStates);
