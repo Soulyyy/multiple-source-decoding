@@ -27,20 +27,24 @@ public class ViterbiDecoder {
   }
 
   public List<Integer> decode(StateList transitionStates, StateList encodingStates, List<State> encoded, double errorRate) {
+    /*
+    Pmst, errorid on saadud info kohta, mitte encoded, see between 2 same type maatriks
+     */
     Integer[][] mostLikelyPath = new Integer[encodingStates.size()][encoded.size()];
     Integer[][] mostLikelyResult = new Integer[encodingStates.size()][encoded.size()];
     Arrays.stream(mostLikelyResult[0]).forEach(i -> i = 0);
     StatePointer[][] statePointers = new StatePointer[encodingStates.size()][encoded.size()];
-    StatePointer[0][0] = new StatePointer(0, 0)
-    for (int i = 0; i < encoded.size(); i++) {
+    statePointers[0][0] = new StatePointer(0, -1);
+    IntStream.range(1, encodingStates.size()).forEach(i -> statePointers[i][0] = new StatePointer(Integer.MAX_VALUE, -1));
+
+    for (int i = 1; i < encoded.size(); i++) {
       State state = encoded.get(i);
-      int j = 0;
-      for (Map.Entry<State, TrellisNode> node : trellis.getNodes().entrySet()) {
-        statePointers[i][j]
-        System.out.println(computeDistance(state.asList(), node.getValue().getValue().asList(), errorRate) + " " + state.toString() + " " + node.getValue().getValue().toString());
-        j++;
+      for (int j = 0; j < encodingStates.size(); j++) {
+        updateStatePointer(state, encodingStates, statePointers, i, j, errorRate);
+        //System.out.println(computeDistance(state.asList(), node.getValue().getValue().asList(), errorRate) + " " + state.toString() + " " + node.getValue().getValue().toString());
       }
     }
+    for(int i = 0; )
     return null;
   }
 
@@ -49,18 +53,28 @@ public class ViterbiDecoder {
     return hammingDistance * (1 - errorRate) + errorRate * (state.size() - hammingDistance);
   }
 
-  private void updateStatePointer(StatePointer[][] statePointers, double distance)
+  private void updateStatePointer(State state, StateList encodingStates, StatePointer[][] statePointers, int i, int j, double errorRate) {
+    int h = 0;
+    for (State encodingState : encodingStates.getStates()) {
+      double distance = computeDistance(state.asList(), encodingState.asList(), errorRate);
+      double oldState = statePointers[h][i - 1].distance;
+      if (statePointers[j][i] == null || statePointers[j][i].distance > distance + oldState) {
+        statePointers[j][i] = new StatePointer(distance + oldState, h);
+      }
+      h++;
+    }
+  }
 
   private class StatePointer {
     int index;
-    long distance;
+    double distance;
 
-    public StatePointer(int distance, int index) {
+    public StatePointer(double distance, int index) {
       this.distance = distance;
       this.index = index;
     }
 
-    public void update(long distance, int index) {
+    public void update(double distance, int index) {
       if (this.distance > distance) {
         this.distance = distance;
         this.index = index;
