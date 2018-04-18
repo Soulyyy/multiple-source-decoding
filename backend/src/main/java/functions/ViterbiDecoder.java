@@ -4,8 +4,11 @@ import static utils.VectorUtils.computeHammingDistance;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,8 +47,23 @@ public class ViterbiDecoder {
         //System.out.println(computeDistance(state.asList(), node.getValue().getValue().asList(), errorRate) + " " + state.toString() + " " + node.getValue().getValue().toString());
       }
     }
-    for(int i = 0; )
-    return null;
+    List<State> states = new Stack<>();
+    StatePointer previousState = null;
+    int index = -1;
+    for (int i = 0; i < encodingStates.size(); i++) {
+      StatePointer curState = statePointers[i][statePointers[0].length - 1];
+      if (previousState == null || curState.distance < previousState.distance) {
+        previousState = curState;
+        index = i;
+      }
+    }
+    states.add(encodingStates.getState(index));
+    for (int i = 1; i < statePointers[0].length - 1; i++) {
+      StatePointer curPointer = statePointers[previousState.index][statePointers[0].length - 1 - i];
+      states.add(encodingStates.getState(curPointer.index));
+      previousState = curPointer;
+    }
+    return states.stream().map(State::asList).flatMap(Collection::stream).collect(Collectors.toList());
   }
 
   private double computeDistance(List<Integer> state, List<Integer> expected, double errorRate) {
