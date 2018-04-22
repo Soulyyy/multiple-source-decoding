@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,23 +46,18 @@ public class ViterbiDecoder {
         //System.out.println(computeDistance(state.asList(), node.getValue().getValue().asList(), errorRate) + " " + state.toString() + " " + node.getValue().getValue().toString());
       }
     }
-    List<State> states = new Stack<>();
-    StatePointer previousState = null;
-    int index = -1;
-    for (int i = 0; i < encodingStates.size(); i++) {
-      StatePointer curState = statePointers[i][statePointers[0].length - 1];
-      if (previousState == null || curState.distance < previousState.distance) {
-        previousState = curState;
-        index = i;
+    StatePointer currentPointer = null;
+    for (int i = 0; i < statePointers.length; i++) {
+      if (currentPointer == null || statePointers[i][statePointers.length - 1].distance < currentPointer.distance) {
+        currentPointer = statePointers[i][statePointers.length - 1];
       }
     }
-    states.add(encodingStates.getState(index));
-    for (int i = 1; i < statePointers[0].length - 1; i++) {
-      StatePointer curPointer = statePointers[previousState.index][statePointers[0].length - 1 - i];
-      states.add(encodingStates.getState(curPointer.index));
-      previousState = curPointer;
+    Stack<State> stack = new Stack<>();
+    for (int i = 1; i < statePointers[0].length; i++) {
+      stack.push(encodingStates.getState(currentPointer.index));
+      currentPointer = statePointers[currentPointer.index][statePointers[0].length - i -1];
     }
-    return states.stream().map(State::asList).flatMap(Collection::stream).collect(Collectors.toList());
+    return new ArrayList<>((stack).stream().map(State::asList).collect(ArrayList::new, List::addAll, List::addAll));
   }
 
   private double computeDistance(List<Integer> state, List<Integer> expected, double errorRate) {

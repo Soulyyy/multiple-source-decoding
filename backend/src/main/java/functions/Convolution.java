@@ -20,11 +20,13 @@ public class Convolution {
       throw new IllegalArgumentException("Input length of " + input.size() + " does not match matrix column count " + matrix.columns());
     }
     return IntStream.range(0, matrix.rows())
-        .mapToObj(i -> IntStream.range(0, matrix.columns())
-            .mapToObj(j -> matrix.get(i, j) * input.get(j))
-            .reduce((a, b) -> a + b)
-            .orElse(0)
-        )
+        .mapToObj
+            (i -> IntStream.range(0, matrix.columns())
+                .map(j -> matrix.columns() - j - 1)
+                .mapToObj(j -> matrix.get(i, j) * input.get(j))
+                .reduce((a, b) -> a + b)
+                .orElse(0)
+            )
         .map(i -> i % 2)
         .collect(Collectors.toList());
   }
