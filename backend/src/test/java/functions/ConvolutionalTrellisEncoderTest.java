@@ -12,14 +12,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 import builder.MatrixFactory;
 import builder.TrellisFactory;
 import data.Matrix;
-import data.State;
 import data.trellis.Trellis;
 
 public class ConvolutionalTrellisEncoderTest {
 
   static Collection<Object[]> data() {
     return Arrays.asList(new Object[][]{
-        //{"57.mat", Arrays.asList(1, 0, 0, 1, 1, 0, 1), createStateList(Arrays.asList(0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0), 2)},
         {"76.mat", Arrays.asList(1, 0, 1, 1, 0, 0), Arrays.asList(1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0)}
     });
   }
@@ -27,7 +25,7 @@ public class ConvolutionalTrellisEncoderTest {
   @DisplayName("Trellis iterator tests")
   @ParameterizedTest(name = "Read matrix from file \" {0}\", encode \" {1}\", expect \" {2}\"")
   @MethodSource(value = "data")
-  public void testEncoder(String matrixFileName, List<Integer> input, List<State> expectedOutput) {
+  public void testEncoder(String matrixFileName, List<Integer> input, List<Integer> expectedOutput) {
     Matrix matrix = MatrixFactory.build(matrixFileName);
     Trellis trellis = TrellisFactory.build(matrix, 0.0);
     ConvolutionalTrellisEncoder encoder = new ConvolutionalTrellisEncoder(trellis);
