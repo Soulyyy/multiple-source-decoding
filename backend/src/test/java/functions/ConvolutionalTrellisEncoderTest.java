@@ -1,7 +1,6 @@
 package functions;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static utils.TestUtils.createStateList;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -11,14 +10,17 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import builder.MatrixFactory;
+import builder.TrellisFactory;
 import data.Matrix;
 import data.State;
+import data.trellis.Trellis;
 
 public class ConvolutionalTrellisEncoderTest {
 
   static Collection<Object[]> data() {
     return Arrays.asList(new Object[][]{
-        {"57.mat", Arrays.asList(1, 0, 0, 1, 1, 0, 1), createStateList(Arrays.asList(0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0), 2)},
+        //{"57.mat", Arrays.asList(1, 0, 0, 1, 1, 0, 1), createStateList(Arrays.asList(0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0), 2)},
+        {"76.mat", Arrays.asList(1, 0, 1, 1, 0, 0), Arrays.asList(1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0)}
     });
   }
 
@@ -27,9 +29,9 @@ public class ConvolutionalTrellisEncoderTest {
   @MethodSource(value = "data")
   public void testEncoder(String matrixFileName, List<Integer> input, List<State> expectedOutput) {
     Matrix matrix = MatrixFactory.build(matrixFileName);
-    Trellis trellis = TrellisFactory.build(matrix);
+    Trellis trellis = TrellisFactory.build(matrix, 0.0);
     ConvolutionalTrellisEncoder encoder = new ConvolutionalTrellisEncoder(trellis);
-    List<State> encoded = encoder.encode(input);
+    List<Integer> encoded = encoder.encode(input);
     assertEquals(expectedOutput, encoded);
   }
 }

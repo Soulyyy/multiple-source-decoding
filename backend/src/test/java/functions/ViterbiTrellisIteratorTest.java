@@ -11,8 +11,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import builder.MatrixFactory;
+import builder.TrellisFactory;
 import data.Matrix;
 import data.State;
+import data.trellis.Trellis;
 
 public class ViterbiTrellisIteratorTest {
 
@@ -27,7 +29,7 @@ public class ViterbiTrellisIteratorTest {
   @MethodSource(value = "data")
   public void testEncoder(String matrixFileName, List<State> input, List<Integer> expectedOutput) {
     Matrix matrix = MatrixFactory.build(matrixFileName);
-    Trellis trellis = TrellisFactory.build(matrix);
+    Trellis trellis = TrellisFactory.build(matrix, 0.0);
     ViterbiDecoder decoder = new ViterbiDecoder(trellis);
     List<Integer> decoded = decoder.decode(StatesGenerator.generateStates(1), StatesGenerator.generateStates(2), input, 0.0);
     assertEquals(expectedOutput, decoded);

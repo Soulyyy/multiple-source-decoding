@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import data.State;
+
 public class Trellis {
 
   private final Map<List<Integer>, TrellisNode> trellisNodes = new HashMap<>();
@@ -17,5 +19,9 @@ public class Trellis {
 
   public TrellisNode getNode(List<Integer> key) {
     return trellisNodes.get(key);
+  }
+
+  public TrellisNode getNode(State state) {
+    return trellisNodes.get(state.asList());
   }
 }
