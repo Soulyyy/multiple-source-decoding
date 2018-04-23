@@ -1,55 +1,34 @@
 package data.trellis;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import data.State;
-import lombok.NonNull;
-
 public class TrellisNode {
 
-  @NonNull
-  private State key;
 
-  @NonNull
-  private State value;
+  private final List<Integer> nodeBits;
 
-  private Map<State, TrellisNode> edges;
+  private Map<List<Integer>, TrellisEdge> edges;
 
-  public TrellisNode(State key, State value) {
-    this.key = key;
-    this.value = value;
-    this.edges = new HashMap<>();
+  public TrellisNode(List<Integer> nodeBits) {
+    this.nodeBits = nodeBits;
   }
 
-  public void addEdge(TrellisNode node) {
-    edges.put(node.getKey(), node);
+  public List<Integer> getNodeBits() {
+    return nodeBits;
   }
 
-  public Map<State, TrellisNode> getEdges() {
+  public Map<List<Integer>, TrellisEdge> getEdges() {
     return edges;
   }
 
-  public TrellisNode getEdge(State key) {
-    return edges.get(key);
+  public TrellisEdge getEdge(List<Integer> suffixBits) {
+    return edges.get(suffixBits);
   }
 
-  public State getKey() {
-    return key;
-  }
-
-  public State getValue() {
-    return value;
-  }
-
-  @Override
-  public String toString() {
-    return "(" + key +
-        ") -> (" +
-        value +
-        ")";
+  public void setEdges(Map<List<Integer>, TrellisEdge> edges) {
+    this.edges = edges;
   }
 
   @Override
@@ -57,19 +36,20 @@ public class TrellisNode {
     if (this == o) {
       return true;
     }
-    if (o instanceof List) {
-      return key.equals(o);
-    }
-    else if (o == null || getClass() != o.getClass()) {
+    if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    TrellisNode node = (TrellisNode) o;
-    return Objects.equals(key, node.key);
+    TrellisNode that = (TrellisNode) o;
+    return Objects.equals(nodeBits, that.nodeBits);
   }
 
   @Override
   public int hashCode() {
+    return Objects.hash(nodeBits);
+  }
 
-    return Objects.hash(key);
+  @Override
+  public String toString() {
+    return this.nodeBits.toString();
   }
 }

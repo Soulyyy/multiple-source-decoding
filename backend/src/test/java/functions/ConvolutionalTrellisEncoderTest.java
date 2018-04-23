@@ -11,10 +11,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import builder.MatrixFactory;
-import builder.TrellisFactory;
 import data.Matrix;
 import data.State;
-import data.trellis.Trellis;
 
 public class ConvolutionalTrellisEncoderTest {
 

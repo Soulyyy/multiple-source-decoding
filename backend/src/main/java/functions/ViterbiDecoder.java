@@ -4,7 +4,6 @@ import static utils.VectorUtils.computeHammingDistance;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -16,7 +15,6 @@ import data.ProbabilityMap;
 import data.State;
 import data.StateList;
 import data.trellis.Trellis;
-import data.trellis.TrellisNode;
 
 public class ViterbiDecoder {
 

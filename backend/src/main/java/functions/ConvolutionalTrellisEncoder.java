@@ -51,7 +51,7 @@ public class ConvolutionalTrellisEncoder {
   private int getTrellisNodeKeyLength(TrellisNode node) {
     return node.getEdges().entrySet().stream()
         .map(Map.Entry::getValue)
-        .map(TrellisNode::getKey)
+        .map(TrellisNode::getNodeBits)
         .mapToInt(State::size)
         .findFirst()
         .orElseThrow(() -> new IllegalArgumentException("Didn't find key length"));

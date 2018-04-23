@@ -7,7 +7,6 @@ import java.util.Map;
 import data.ProbabilityMap;
 import data.State;
 import data.StateList;
-import data.trellis.Trellis;
 
 public class TransitionMapGenerator {
 

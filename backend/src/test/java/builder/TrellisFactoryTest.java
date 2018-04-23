@@ -1,37 +1,80 @@
 package builder;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import data.Matrix;
 import data.trellis.Trellis;
+import data.trellis.TrellisEdge;
+import data.trellis.TrellisNode;
 
 public class TrellisFactoryTest {
 
   static Collection<Object[]> data() {
     return Arrays.asList(new Object[][]{
-        {"57.mat", "(101) -> (00) ==> {(010) -> (01), (011) -> (10)}\n" +
-            "(010) -> (01) ==> {(101) -> (00), (100) -> (11)}\n" +
-            "(000) -> (00) ==> {(000) -> (00), (001) -> (11)}\n" +
-            "(011) -> (10) ==> {(110) -> (10), (111) -> (01)}\n" +
-            "(110) -> (10) ==> {(101) -> (00), (100) -> (11)}\n" +
-            "(001) -> (11) ==> {(010) -> (01), (011) -> (10)}\n" +
-            "(100) -> (11) ==> {(000) -> (00), (001) -> (11)}\n" +
-            "(111) -> (01) ==> {(110) -> (10), (111) -> (01)}"},
+        {"76.mat"
+            , new Integer[][][]{
+            new Integer[][]{
+                new Integer[]{0, 0},
+                new Integer[]{0, 0},
+                new Integer[]{0, 0},
+                new Integer[]{1, 1},
+                new Integer[]{1, 0}
+            },
+            new Integer[][]{
+                new Integer[]{1, 0},
+                new Integer[]{1, 1},
+                new Integer[]{0, 1},
+                new Integer[]{0, 0},
+                new Integer[]{1, 1}
+            },
+            new Integer[][]{
+                new Integer[]{0, 1},
+                new Integer[]{1, 0},
+                new Integer[]{0, 0},
+                new Integer[]{0, 1},
+                new Integer[]{1, 0}
+            },
+            new Integer[][]{
+                new Integer[]{1, 1},
+                new Integer[]{0, 1},
+                new Integer[]{0, 1},
+                new Integer[]{1, 0},
+                new Integer[]{1, 1}
+            },
+        }
+        }
     });
   }
 
   @DisplayName("Trellis creation tests")
   @ParameterizedTest(name = "Read matrix from file \"{0}}\" to generate trellis, expecting \"{1}\"")
   @MethodSource(value = "data")
-  public void testTrellisFactory(String matrixFileName, String expectedTrellis) {
+  public void testTrellisFactory(String matrixFileName, Integer[][][] verificationArrays) {
     Matrix matrix = MatrixFactory.build(matrixFileName);
-    Trellis trellis = TrellisFactory.build(matrix);
-    assertEquals(expectedTrellis, trellis.toString());
+    Trellis trellis = TrellisFactory.build(matrix, 0.0);
+    for (Integer[][] verificationArray : verificationArrays) {
+      verifyNode(trellis, verificationArray);
+    }
+  }
+
+  private void verifyNode(Trellis trellis, Integer[][] verificationArray) {
+    TrellisNode node = trellis.getNode(Arrays.asList(verificationArray[0]));
+
+    TrellisEdge zeroEdge = node.getEdge(Collections.singletonList(0));
+    assertTrue(CollectionUtils.isEqualCollection(zeroEdge.getParityBits(), Arrays.asList(verificationArray[1])));
+    assertTrue(CollectionUtils.isEqualCollection(zeroEdge.getTargetNode().getNodeBits(), Arrays.asList(verificationArray[2])));
+
+    TrellisEdge oneEdge = node.getEdge(Collections.singletonList(1));
+    assertTrue(CollectionUtils.isEqualCollection(oneEdge.getParityBits(), Arrays.asList(verificationArray[3])));
+    assertTrue(CollectionUtils.isEqualCollection(oneEdge.getTargetNode().getNodeBits(), Arrays.asList(verificationArray[4])));
   }
 }

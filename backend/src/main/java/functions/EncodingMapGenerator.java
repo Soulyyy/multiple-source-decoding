@@ -1,3 +1,4 @@
+/*
 package functions;
 
 import static utils.VectorUtils.computeHammingDistance;
@@ -8,7 +9,6 @@ import java.util.Map;
 import data.ProbabilityMap;
 import data.State;
 import data.StateList;
-import data.trellis.Trellis;
 
 public class EncodingMapGenerator {
 
@@ -41,3 +41,4 @@ public class EncodingMapGenerator {
     return 1 - Math.pow(1 - errorRate, length - hammingDistance) + ERROR_CORRECTION_VALUE;
   }
 }
+*/

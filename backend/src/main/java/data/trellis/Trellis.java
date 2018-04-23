@@ -1,38 +1,21 @@
 package data.trellis;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
-import data.State;
+import java.util.Set;
 
 public class Trellis {
 
-  private Map<State, TrellisNode> nodes;
+  private final Map<List<Integer>, TrellisNode> trellisNodes = new HashMap<>();
 
-  public Trellis(Map<State, TrellisNode> nodes) {
-    this.nodes = nodes;
+  public Trellis(Set<TrellisNode> trellisNodeSet) {
+    for (TrellisNode node : trellisNodeSet) {
+      trellisNodes.put(node.getNodeBits(), node);
+    }
   }
 
-  public TrellisNode getNode(State key) {
-    return nodes.get(key);
-  }
-
-  public Map<State, TrellisNode> getNodes() {
-    return nodes;
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    nodes.forEach((key, value) -> sb.append(value.toString()).append(" ==> {")
-        .append(value.getEdges().entrySet()
-            .stream()
-            .map(Map.Entry::getValue)
-            .map(TrellisNode::toString)
-            .reduce((a, b) -> a + ", " + b)
-            .get())
-        .append("}")
-        .append("\n"));
-    return sb.toString().trim();
+  public TrellisNode getNode(List<Integer> key) {
+    return trellisNodes.get(key);
   }
 }

@@ -6,71 +6,57 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import data.Matrix;
-import data.State;
 import data.trellis.Trellis;
+import data.trellis.TrellisEdge;
 import data.trellis.TrellisNode;
 import functions.Convolution;
+import functions.StatesGenerator;
 import utils.PermutationGenerator;
 
 public class TrellisFactory {
 
-  public static Trellis build(Matrix matrix) {
-    return build(Collections.singletonList(matrix));
+  public static Trellis build(Matrix matrix, Double errorRate) {
+    return build(Collections.singletonList(matrix), errorRate);
   }
 
-  public static Trellis build(List<Matrix> matrices) {
-    Set<TrellisNode> initialNodes = generateTrellisNodes(matrices.get(0));
-    Map<State, TrellisNode> nodeMap = new HashMap<>();
-    for (TrellisNode node : initialNodes) {
-      nodeMap.put(node.getKey(), node);
-    }
-    Set<TrellisNode> sourceNodes = initialNodes;
-    for (int i = 1; i < matrices.size(); i++) {
-      int index = i % matrices.size();
-      Matrix matrix = matrices.get(index);
-      Set<TrellisNode> targetNodes = generateTrellisNodes(matrix);
-      mapLayer(sourceNodes, targetNodes);
-      sourceNodes = targetNodes;
-    }
-    mapLayer(sourceNodes, initialNodes);
-    return new Trellis(nodeMap);
+  public static Trellis build(List<Matrix> matrices, Double errorRate) {
+    Matrix matrix = matrices.get(0);
+    Set<TrellisNode> initialNodes = generateTrellisNodes(matrix.rows());
+    //Wrap the nodes up
+    Set<TrellisNode> lastNodes = initialNodes;
+    mapTrellisNodes(matrix, initialNodes, lastNodes);
+    return new Trellis(initialNodes);
   }
 
-  private static Set<TrellisNode> generateTrellisNodes(Matrix matrix) {
-    final Convolution convolution = new Convolution(matrix);
-    return generateLayer(matrix, convolution);
-  }
-
-  private static Set<TrellisNode> generateLayer(Matrix matrix, Convolution convolution) {
-    return PermutationGenerator.generateAllBinaryPermutations(matrix.columns()).stream()
-        .map(State::new)
-        .map(i -> new TrellisNode(i, new State(convolution.convolve(i.asList()))))
+  private static Set<TrellisNode> generateTrellisNodes(int numberOfColumns) {
+    return StatesGenerator.generateStates(numberOfColumns).getStates().stream()
+        .map(i -> new TrellisNode(i.asList()))
         .collect(Collectors.toSet());
   }
 
-  private static void mapLayer(Set<TrellisNode> sourceLayer, Set<TrellisNode> targetLayer) {
-    sourceLayer.forEach(s -> targetLayer.stream()
-        .filter(t -> isElementMatch(s, t))
-        .forEach(s::addEdge));
+  private static void mapTrellisNodes(Matrix matrix, Set<TrellisNode> sourceNodes, Set<TrellisNode> targetNodes) {
+    final Convolution convolution = new Convolution(matrix);
+    for (TrellisNode sourceNode : sourceNodes) {
+      addTrellisEdges(sourceNode, targetNodes, convolution, matrix.columns() - matrix.rows());
+    }
   }
 
-  private static boolean isElementMatch(TrellisNode sourceNode, TrellisNode targetNode) {
-    State sourceKey = sourceNode.getKey();
-    State targetKey = targetNode.getKey();
-    //If source is smaller than target max, match everything
-    if (targetKey.size() - 1 > sourceKey.size()) {
-      List<Integer> compareKey = targetKey.asList().subList(targetKey.size() - 1 - sourceKey.size(), targetKey.size() - 1);
-      return sourceKey.equals(compareKey);
+  private static void addTrellisEdges(TrellisNode sourceNode, Set<TrellisNode> targetNodes, Convolution convolution, int difference) {
+    Map<List<Integer>, TrellisEdge> mappings = new HashMap<>();
+
+    List<List<Integer>> allPermutationStates = PermutationGenerator.generateAllBinaryPermutations(difference);
+    for (List<Integer> permutationPrefix : allPermutationStates) {
+      List<Integer> codeword = Stream.concat(permutationPrefix.stream(), sourceNode.getNodeBits().stream()).collect(Collectors.toList());
+      for (TrellisNode targetNode : targetNodes) {
+        if (codeword != null && codeword.subList(0, targetNode.getNodeBits().size()).equals(targetNode.getNodeBits())) {
+          TrellisEdge edge = new TrellisEdge(0, convolution.convolve(codeword), targetNode);
+          mappings.put(permutationPrefix, edge);
+        }
+      }
     }
-    else if (targetKey.size() == 1) {
-      return true;
-    }
-    else {
-      List<Integer> targetCompareKey = targetKey.asList().subList(0, targetKey.size() - 1);
-      List<Integer> sourceCompareKey = sourceKey.asList().subList(sourceKey.size() - targetCompareKey.size(), sourceKey.size());
-      return sourceCompareKey.equals(targetCompareKey);
-    }
+    sourceNode.setEdges(mappings);
   }
 }
