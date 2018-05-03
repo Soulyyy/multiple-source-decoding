@@ -15,10 +15,6 @@ public class ProbabilityMap {
     return probabilityMap;
   }
 
-  public Map<State, Double> getProbabilityEntry(State transitionState) {
-    return probabilityMap.get(transitionState);
-  }
-
   public int size() {
     return probabilityMap.size();
   }
