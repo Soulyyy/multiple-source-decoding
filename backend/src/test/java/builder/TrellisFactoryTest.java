@@ -60,7 +60,7 @@ public class TrellisFactoryTest {
   @MethodSource(value = "data")
   public void testTrellisFactory(String matrixFileName, Integer[][][] verificationArrays) {
     Matrix matrix = MatrixFactory.build(matrixFileName);
-    Trellis trellis = TrellisFactory.build(matrix, 0.0);
+    Trellis trellis = TrellisFactory.build(matrix);
     for (Integer[][] verificationArray : verificationArrays) {
       verifyNode(trellis, verificationArray);
     }
@@ -71,10 +71,10 @@ public class TrellisFactoryTest {
 
     TrellisEdge zeroEdge = node.getEdge(Collections.singletonList(0));
     assertTrue(CollectionUtils.isEqualCollection(zeroEdge.getParityBits(), Arrays.asList(verificationArray[1])));
-    assertTrue(CollectionUtils.isEqualCollection(zeroEdge.getTargetNode().getNodeBits(), Arrays.asList(verificationArray[2])));
+    assertTrue(CollectionUtils.isEqualCollection(zeroEdge.getTargetNode().getState().asList(), Arrays.asList(verificationArray[2])));
 
     TrellisEdge oneEdge = node.getEdge(Collections.singletonList(1));
     assertTrue(CollectionUtils.isEqualCollection(oneEdge.getParityBits(), Arrays.asList(verificationArray[3])));
-    assertTrue(CollectionUtils.isEqualCollection(oneEdge.getTargetNode().getNodeBits(), Arrays.asList(verificationArray[4])));
+    assertTrue(CollectionUtils.isEqualCollection(oneEdge.getTargetNode().getState().asList(), Arrays.asList(verificationArray[4])));
   }
 }

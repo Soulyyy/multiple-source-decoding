@@ -29,7 +29,7 @@ public class ViterbiTrellisIteratorTest {
   @MethodSource(value = "data")
   public void testEncoder(String matrixFileName, List<State> input, List<Integer> expectedOutput) {
     Matrix matrix = MatrixFactory.build(matrixFileName);
-    Trellis trellis = TrellisFactory.build(matrix, 0.0);
+    Trellis trellis = TrellisFactory.build(matrix);
     ViterbiDecoder decoder = new ViterbiDecoder(trellis);
     List<Integer> decoded = decoder.decode(StatesGenerator.generateStates(1), StatesGenerator.generateStates(2), input, 0.0);
     assertEquals(expectedOutput, decoded);

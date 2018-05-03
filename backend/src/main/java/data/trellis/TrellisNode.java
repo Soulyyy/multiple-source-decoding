@@ -4,30 +4,36 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import data.State;
+
 public class TrellisNode {
 
 
-  private final List<Integer> nodeBits;
+  private final State state;
 
-  private Map<List<Integer>, TrellisEdge> edges;
+  private Map<State, TrellisEdge> edges;
 
-  public TrellisNode(List<Integer> nodeBits) {
-    this.nodeBits = nodeBits;
+  public TrellisNode(State state) {
+    this.state = state;
   }
 
-  public List<Integer> getNodeBits() {
-    return nodeBits;
+  public State getState() {
+    return state;
   }
 
-  public Map<List<Integer>, TrellisEdge> getEdges() {
+  public Map<State, TrellisEdge> getEdges() {
     return edges;
   }
 
-  public TrellisEdge getEdge(List<Integer> suffixBits) {
-    return edges.get(suffixBits);
+  public TrellisEdge getEdge(List<Integer> nextStateBits) {
+    return getEdge(new State(nextStateBits));
   }
 
-  public void setEdges(Map<List<Integer>, TrellisEdge> edges) {
+  public TrellisEdge getEdge(State nextState) {
+    return edges.get(nextState);
+  }
+
+  public void setEdges(Map<State, TrellisEdge> edges) {
     this.edges = edges;
   }
 
@@ -40,16 +46,16 @@ public class TrellisNode {
       return false;
     }
     TrellisNode that = (TrellisNode) o;
-    return Objects.equals(nodeBits, that.nodeBits);
+    return Objects.equals(state, that.state);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(nodeBits);
+    return Objects.hash(state);
   }
 
   @Override
   public String toString() {
-    return this.nodeBits.toString();
+    return this.state.toString();
   }
 }

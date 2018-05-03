@@ -4,18 +4,12 @@ import java.util.List;
 
 public class TrellisEdge {
 
-  private double weight;
   private List<Integer> parityBits;
   private TrellisNode targetNode;
 
-  public TrellisEdge(double weight, List<Integer> parityBits, TrellisNode targetNode) {
-    this.weight = weight;
+  public TrellisEdge(List<Integer> parityBits, TrellisNode targetNode) {
     this.parityBits = parityBits;
     this.targetNode = targetNode;
-  }
-
-  public double getWeight() {
-    return weight;
   }
 
   public List<Integer> getParityBits() {
@@ -28,6 +22,6 @@ public class TrellisEdge {
 
   @Override
   public String toString() {
-    return weight + " " + parityBits.toString();
+    return parityBits.toString()+ " -> " + targetNode.toString();
   }
 }

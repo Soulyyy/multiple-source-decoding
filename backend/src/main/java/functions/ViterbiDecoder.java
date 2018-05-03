@@ -4,8 +4,11 @@ import static utils.VectorUtils.computeHammingDistance;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Stack;
 import java.util.stream.IntStream;
 import org.slf4j.Logger;
@@ -15,6 +18,8 @@ import data.ProbabilityMap;
 import data.State;
 import data.StateList;
 import data.trellis.Trellis;
+import data.trellis.TrellisEdge;
+import data.trellis.TrellisNode;
 
 public class ViterbiDecoder {
 
@@ -27,40 +32,85 @@ public class ViterbiDecoder {
   }
 
   public List<Integer> decode(StateList transitionStates, StateList encodingStates, List<State> encoded, double errorRate) {
-    /*
-    Pmst, errorid on saadud info kohta, mitte encoded, see between 2 same type maatriks
-     */
-    Integer[][] mostLikelyPath = new Integer[encodingStates.size()][encoded.size()];
-    Integer[][] mostLikelyResult = new Integer[encodingStates.size()][encoded.size()];
-    Arrays.stream(mostLikelyResult[0]).forEach(i -> i = 0);
-    StatePointer[][] statePointers = new StatePointer[encodingStates.size()][encoded.size()];
-    statePointers[0][0] = new StatePointer(0, -1);
-    IntStream.range(1, encodingStates.size()).forEach(i -> statePointers[i][0] = new StatePointer(Integer.MAX_VALUE, -1));
+    //Initialize distance and state maps
+    Double[][] distanceMap = new Double[encodingStates.size()][encoded.size() + 1];
+    distanceMap[0][0] = 0.0;
+    IntStream.range(1, encodingStates.size()).forEach(i -> distanceMap[i][0] = Double.MAX_VALUE);
+    State[][] stateMap = new State[encodingStates.size()][encoded.size()];
+    Map<State, Integer> stateIndexMap = generateIndexMap(encodingStates);
+    //Use a queue
+    Queue<QueueNode> nodeQueue = new LinkedList<>();
+    nodeQueue.add(new QueueNode(trellis.getNode(encodingStates.getState(0)), 0, 0.0));
+    nodeQueue.add(new QueueNode(trellis.getNode(encodingStates.getState(1)), 0, Double.MAX_VALUE));
+    nodeQueue.add(new QueueNode(trellis.getNode(encodingStates.getState(2)), 0, Double.MAX_VALUE));
+    nodeQueue.add(new QueueNode(trellis.getNode(encodingStates.getState(3)), 0, Double.MAX_VALUE));
+    while (!nodeQueue.isEmpty()) {
+      QueueNode currentNode = nodeQueue.poll();
+      if (currentNode.depth < encoded.size()) {
+        for (Map.Entry<State, TrellisEdge> edgeEntry : currentNode.trellisNode.getEdges().entrySet()) {
+          TrellisEdge edge = edgeEntry.getValue();
+          double distance = computeDistance(edge.getParityBits(), encoded.get(currentNode.depth).asList(), errorRate);
+          int stateIndex = stateIndexMap.get(edge.getTargetNode().getState());
+          Double expectedDistance = distanceMap[stateIndex][currentNode.depth + 1];
+          Double newDistance = distanceMap[stateIndexMap.get(currentNode.trellisNode.getState())][currentNode.depth] + distance;
+          if (expectedDistance == null || newDistance < expectedDistance) {
 
-    for (int i = 1; i < encoded.size(); i++) {
-      State state = encoded.get(i);
-      for (int j = 0; j < encodingStates.size(); j++) {
-        updateStatePointer(state, encodingStates, statePointers, i, j, errorRate);
-        //System.out.println(computeDistance(state.asList(), node.getValue().getValue().asList(), errorRate) + " " + state.toString() + " " + node.getValue().getValue().toString());
+            distanceMap[stateIndex][currentNode.depth + 1] = newDistance;
+            stateMap[stateIndex][currentNode.depth] = currentNode.trellisNode.getState();
+            nodeQueue.add(new QueueNode(edge.getTargetNode(), currentNode.depth + 1, distance));
+          }
+        }
       }
     }
-    StatePointer currentPointer = null;
-    for (int i = 0; i < statePointers.length; i++) {
-      if (currentPointer == null || statePointers[i][statePointers.length - 1].distance < currentPointer.distance) {
-        currentPointer = statePointers[i][statePointers.length - 1];
+    //decode
+    //find start index
+    int minIndex = -1;
+    Double minWeight = Double.MAX_VALUE;
+    for (int i = 0; i < distanceMap.length; i++) {
+      if (distanceMap[i][distanceMap[0].length - 1] < minWeight) {
+        minIndex = i;
+        minWeight = distanceMap[i][distanceMap[0].length - 1];
       }
     }
-    Stack<State> stack = new Stack<>();
-    for (int i = 1; i < statePointers[0].length; i++) {
-      stack.push(encodingStates.getState(currentPointer.index));
-      currentPointer = statePointers[currentPointer.index][statePointers[0].length - i -1];
+
+    Stack<Integer> stack = new Stack<>();
+
+    //backtrack
+    int previousStateIndex;
+    int currentStateIndex = minIndex;
+    for (int i = 0; i < stateMap[0].length; i++) {
+      previousStateIndex = currentStateIndex;
+      currentStateIndex = stateIndexMap.get(stateMap[previousStateIndex][stateMap[0].length - 1 - i]);
+      System.out.println("i is: " + i);
+      System.out.println("Previous state is: " + encodingStates.getState(previousStateIndex));
+      System.out.println("Current state is: " + encodingStates.getState(currentStateIndex));
+      if (currentStateIndex >= previousStateIndex) {
+        stack.push(0);
+        System.out.println("added: 0");
+      }
+      else {
+        stack.push(1);
+        System.out.println("added: 1");
+      }
     }
-    return new ArrayList<>((stack).stream().map(State::asList).collect(ArrayList::new, List::addAll, List::addAll));
+    List<Integer> response = new ArrayList<>();
+    while (!stack.isEmpty()) {
+      response.add(stack.pop());
+    }
+    return response;
   }
 
   private double computeDistance(List<Integer> state, List<Integer> expected, double errorRate) {
     long hammingDistance = computeHammingDistance(state, expected);
     return hammingDistance * (1 - errorRate) + errorRate * (state.size() - hammingDistance);
+  }
+
+  private Map<State, Integer> generateIndexMap(StateList stateList) {
+    Map<State, Integer> stateMap = new HashMap<>();
+    for (int i = 0; i < stateList.size(); i++) {
+      stateMap.put(stateList.getState(i), i);
+    }
+    return stateMap;
   }
 
   private void updateStatePointer(State state, StateList encodingStates, StatePointer[][] statePointers, int i, int j, double errorRate) {
@@ -89,6 +139,20 @@ public class ViterbiDecoder {
         this.distance = distance;
         this.index = index;
       }
+    }
+  }
+
+  private class QueueNode {
+
+    final TrellisNode trellisNode;
+    final int depth;
+    final Double weight;
+
+    QueueNode(TrellisNode trellisNode, int depth, Double weight) {
+
+      this.trellisNode = trellisNode;
+      this.depth = depth;
+      this.weight = weight;
     }
   }
 

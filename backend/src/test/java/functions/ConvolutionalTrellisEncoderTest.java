@@ -27,7 +27,7 @@ public class ConvolutionalTrellisEncoderTest {
   @MethodSource(value = "data")
   public void testEncoder(String matrixFileName, List<Integer> input, List<Integer> expectedOutput) {
     Matrix matrix = MatrixFactory.build(matrixFileName);
-    Trellis trellis = TrellisFactory.build(matrix, 0.0);
+    Trellis trellis = TrellisFactory.build(matrix);
     ConvolutionalTrellisEncoder encoder = new ConvolutionalTrellisEncoder(trellis);
     List<Integer> encoded = encoder.encode(input);
     assertEquals(expectedOutput, encoded);

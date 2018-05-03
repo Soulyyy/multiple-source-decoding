@@ -22,10 +22,10 @@ public class ConvolutionalTrellisEncoder {
   }
 
   public List<Integer> encode(List<Integer> integers) {
-    TrellisNode activeNode = trellis.getNode(Arrays.asList(0, 0));
+    TrellisNode activeNode = trellis.getNode(new State(Arrays.asList(0, 0)));
     List<Integer> encoded = new ArrayList<>();
     for (Integer integer : integers) {
-      TrellisEdge edge = activeNode.getEdge(Collections.singletonList(integer));
+      TrellisEdge edge = activeNode.getEdge(new State(Collections.singletonList(integer)));
       encoded.addAll(edge.getParityBits());
       activeNode = edge.getTargetNode();
     }
