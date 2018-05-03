@@ -5,6 +5,7 @@ import static utils.TestUtils.createStateList;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -31,7 +32,7 @@ public class ViterbiDecoderTest {
     Matrix matrix = MatrixFactory.build(matrixFileName);
     Trellis trellis = TrellisFactory.build(matrix);
     ViterbiDecoder decoder = new ViterbiDecoder(trellis);
-    List<Integer> decoded = decoder.decode(StatesGenerator.generateStates(1), StatesGenerator.generateStates(2), input, 0.0);
+    List<Integer> decoded = decoder.decode(Collections.singletonList(StatesGenerator.generateStates(1)), Collections.singletonList(StatesGenerator.generateStates(2)), input, 0.0);
     assertEquals(expectedOutput, decoded);
   }
 }

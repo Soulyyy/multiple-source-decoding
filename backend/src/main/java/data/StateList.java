@@ -20,7 +20,7 @@ public class StateList {
     return states.size();
   }
 
-  public State getState(int index) {
+  public State getState(Integer index) {
     if (index < 0 || index >= states.size()) {
       throw new IllegalArgumentException("Index " + index + " not between 0 and " + states.size());
     }
