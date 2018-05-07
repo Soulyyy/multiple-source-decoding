@@ -22,6 +22,10 @@ public class ViterbiDecoderTest {
   static Collection<Object[]> data() {
     return Arrays.asList(new Object[][]{
         {"76.mat", createStateList(Arrays.asList(1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0), 2), Arrays.asList(1, 0, 1, 1, 0, 0)},
+        {"76.mat", createStateList(Arrays.asList(1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1), 2), Arrays.asList(1, 0, 1, 1, 0, 0)},
+        {"76.mat", createStateList(Arrays.asList(1, 1), 2), Collections.singletonList(1)},
+        {"76.mat", createStateList(Collections.singletonList(1), 2), Collections.emptyList()},
+        {"76.mat", createStateList(Collections.emptyList(), 2), Collections.emptyList()},
     });
   }
 
@@ -32,7 +36,7 @@ public class ViterbiDecoderTest {
     Matrix matrix = MatrixFactory.build(matrixFileName);
     Trellis trellis = TrellisFactory.build(matrix);
     ViterbiDecoder decoder = new ViterbiDecoder(trellis);
-    List<Integer> decoded = decoder.decode(Collections.singletonList(StatesGenerator.generateStates(1)), Collections.singletonList(StatesGenerator.generateStates(2)), input, 0.0);
+    List<Integer> decoded = decoder.decode(Collections.singletonList(StatesGenerator.generateStates(2)), input, 0.0);
     assertEquals(expectedOutput, decoded);
   }
 }

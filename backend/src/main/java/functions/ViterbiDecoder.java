@@ -38,11 +38,10 @@ public class ViterbiDecoder {
     this.trellis = trellis;
   }
 
-  public List<Integer> decode(List<StateList> transitionStatesList, List<StateList> encodingStatesList, List<State> encoded, double errorRate) {
+  public List<Integer> decode(List<StateList> encodingStatesList, List<State> encoded, double errorRate) {
+    log.info("Viterbi decoding using states: {} for vector: {}", encodingStatesList, encoded);
     StateList encodingStates = encodingStatesList.get(0);
-    Double[][] distanceMap = new Double[encodingStates.size()][encoded.size() + 1];
-    distanceMap[0][0] = 0.0;
-    IntStream.range(1, encodingStates.size()).forEach(i -> distanceMap[i][0] = Double.MAX_VALUE);
+    Double[][] distanceMap = initializeDistanceMap(encodingStates.size(), encoded.size());
     State[][] stateMap = new State[encodingStates.size()][encoded.size()];
     Map<State, Integer> stateIndexMap = generateIndexMap(encodingStates);
     Queue<QueueNode> nodeQueue = initializeQueue(encodingStates);
@@ -56,7 +55,6 @@ public class ViterbiDecoder {
           Double expectedDistance = distanceMap[stateIndex][currentNode.depth + 1];
           Double newDistance = distanceMap[stateIndexMap.get(currentNode.trellisNode.getState())][currentNode.depth] + distance;
           if (expectedDistance == null || newDistance < expectedDistance) {
-
             distanceMap[stateIndex][currentNode.depth + 1] = newDistance;
             stateMap[stateIndex][currentNode.depth] = currentNode.trellisNode.getState();
             nodeQueue.add(new QueueNode(edge.getTargetNode(), currentNode.depth + 1, distance));
@@ -64,7 +62,15 @@ public class ViterbiDecoder {
         }
       }
     }
+    log.info("Populated distances with {}" , (Object[]) distanceMap);
     return backtrack(distanceMap, stateMap, stateIndexMap);
+  }
+
+  private Double[][] initializeDistanceMap(int stateSize, int vectorSize) {
+    Double[][] distanceMap = new Double[stateSize][vectorSize + 1];
+    distanceMap[0][0] = 0.0;
+    IntStream.range(1, stateSize).forEach(i -> distanceMap[i][0] = Double.MAX_VALUE);
+    return distanceMap;
   }
 
   private Queue<QueueNode> initializeQueue(StateList encodingStates) {
@@ -89,15 +95,8 @@ public class ViterbiDecoder {
   }
 
   private List<Integer> backtrack(Double[][] distanceMap, State[][] stateMap, Map<State, Integer> stateIndexMap) {
-    //find start index
-    int minIndex = IntStream.range(0, distanceMap.length)
-        .mapToObj(i -> new ImmutablePair<>(i, distanceMap[i][distanceMap[0].length - 1]))
-        .min(Comparator.comparing(Pair::getRight))
-        .map(p -> p.left)
-        .orElseThrow(() -> new IllegalStateException("Distances must have a minimal value"));
+    int minIndex = getStartingIndex(distanceMap);
     List<Integer> response = new ArrayList<>();
-
-    //backtrack
     int previousStateIndex;
     int currentStateIndex = minIndex;
     for (int i = 0; i < stateMap[0].length; i++) {
@@ -108,6 +107,14 @@ public class ViterbiDecoder {
     }
     Collections.reverse(response);
     return response;
+  }
+
+  private int getStartingIndex(Double[][] distanceMap) {
+    return IntStream.range(0, distanceMap.length)
+        .mapToObj(i -> new ImmutablePair<>(i, distanceMap[i][distanceMap[0].length - 1]))
+        .min(Comparator.comparing(Pair::getRight))
+        .map(p -> p.left)
+        .orElseThrow(() -> new IllegalStateException("Distances must have a minimal value"));
   }
 
   private class QueueNode {
