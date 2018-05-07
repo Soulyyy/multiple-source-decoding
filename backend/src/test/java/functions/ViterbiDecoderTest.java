@@ -1,7 +1,7 @@
 package functions;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static utils.TestUtils.createStateList;
+import static utils.VectorUtils.createStateList;
 
 import java.util.Arrays;
 import java.util.Collection;

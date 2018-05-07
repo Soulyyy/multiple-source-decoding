@@ -1,7 +1,7 @@
 package functions;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static utils.TestUtils.splitString;
+import static utils.VectorUtils.splitString;
 
 import java.util.Arrays;
 import java.util.Collection;

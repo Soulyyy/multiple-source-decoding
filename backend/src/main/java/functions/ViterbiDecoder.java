@@ -1,6 +1,7 @@
 package functions;
 
 import static utils.VectorUtils.computeHammingDistance;
+import static utils.VectorUtils.createStateList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +28,7 @@ import data.StateList;
 import data.trellis.Trellis;
 import data.trellis.TrellisEdge;
 import data.trellis.TrellisNode;
+import utils.VectorUtils;
 
 public class ViterbiDecoder {
 
@@ -36,6 +38,10 @@ public class ViterbiDecoder {
 
   public ViterbiDecoder(Trellis trellis) {
     this.trellis = trellis;
+  }
+
+  public List<Integer> decode(int numberOfStates, List<Integer> encoded, double errorRate) {
+    return decode(Collections.singletonList(StatesGenerator.generateStates(numberOfStates)), VectorUtils.createStateList(encoded, numberOfStates), errorRate);
   }
 
   public List<Integer> decode(List<StateList> encodingStatesList, List<State> encoded, double errorRate) {
@@ -62,7 +68,7 @@ public class ViterbiDecoder {
         }
       }
     }
-    log.info("Populated distances with {}" , (Object[]) distanceMap);
+    log.info("Populated distances with {}", (Object[]) distanceMap);
     return backtrack(distanceMap, stateMap, stateIndexMap);
   }
 
@@ -102,7 +108,13 @@ public class ViterbiDecoder {
     for (int i = 0; i < stateMap[0].length; i++) {
       previousStateIndex = currentStateIndex;
       currentStateIndex = stateIndexMap.get(stateMap[previousStateIndex][stateMap[0].length - 1 - i]);
-      int decodedValue = currentStateIndex < previousStateIndex ? 1 : 0;
+      int decodedValue;
+      if (currentStateIndex == previousStateIndex) {
+        decodedValue = stateMap.length / 2 > currentStateIndex ? 0 : 1;
+      }
+      else {
+        decodedValue = currentStateIndex < previousStateIndex ? 1 : 0;
+      }
       response.add(decodedValue);
     }
     Collections.reverse(response);
