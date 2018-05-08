@@ -23,7 +23,7 @@ public class MatrixFactoryTest {
   }
 
   @DisplayName("Matrix creation tests")
-  @ParameterizedTest(name = "Read file \"{0}}\" as a matix, expecting content {1}")
+  @ParameterizedTest(name = "Read file \"{0}}\" as a matrix, expecting content {1}")
   @MethodSource(value = "data")
   public void testMatrixFactory(String path, String expected) {
     try {
