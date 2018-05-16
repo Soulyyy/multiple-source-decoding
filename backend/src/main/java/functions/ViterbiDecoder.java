@@ -40,26 +40,26 @@ public class ViterbiDecoder {
     this.trellis = trellis;
   }
 
-  public List<Integer> decode(int numberOfStates, List<Integer> encoded, double errorRate) {
-    return decode(Collections.singletonList(StatesGenerator.generateStates(numberOfStates)), VectorUtils.createStateList(encoded, numberOfStates), errorRate);
-  }
+  public List<Integer> decode(List<Integer> integerList, double errorRate) {
+    List<StateList> states = trellis.getStates();
+    List<State> encoded = getStatesFromIntegers(integerList, states);
+    log.info("Viterbi decoding using states: {} for vector: {}", states, encoded);
 
-  public List<Integer> decode(List<StateList> encodingStatesList, List<State> encoded, double errorRate) {
-    log.info("Viterbi decoding using states: {} for vector: {}", encodingStatesList, encoded);
-    StateList encodingStates = encodingStatesList.get(0);
+    StateList encodingStates = states.get(0);
     Double[][] distanceMap = initializeDistanceMap(encodingStates.size(), encoded.size());
     State[][] stateMap = new State[encodingStates.size()][encoded.size()];
-    Map<State, Integer> stateIndexMap = generateIndexMap(encodingStates);
     Queue<QueueNode> nodeQueue = initializeQueue(encodingStates);
+
     while (!nodeQueue.isEmpty()) {
       QueueNode currentNode = nodeQueue.poll();
       if (currentNode.depth < encoded.size()) {
         for (Map.Entry<State, TrellisEdge> edgeEntry : currentNode.trellisNode.getEdges().entrySet()) {
           TrellisEdge edge = edgeEntry.getValue();
           double distance = computeDistance(edge.getParityBits(), encoded.get(currentNode.depth).asList(), errorRate);
-          int stateIndex = stateIndexMap.get(edge.getTargetNode().getState());
+          encodingStates = states.get(currentNode.depth % states.size());
+          int stateIndex = encodingStates.getIndex(edge.getTargetNode().getState());
           Double expectedDistance = distanceMap[stateIndex][currentNode.depth + 1];
-          Double newDistance = distanceMap[stateIndexMap.get(currentNode.trellisNode.getState())][currentNode.depth] + distance;
+          Double newDistance = distanceMap[encodingStates.getIndex(currentNode.trellisNode.getState())][currentNode.depth] + distance;
           if (expectedDistance == null || newDistance < expectedDistance) {
             distanceMap[stateIndex][currentNode.depth + 1] = newDistance;
             stateMap[stateIndex][currentNode.depth] = currentNode.trellisNode.getState();
@@ -69,7 +69,14 @@ public class ViterbiDecoder {
       }
     }
     log.info("Populated distances with {}", (Object[]) distanceMap);
-    return backtrack(distanceMap, stateMap, stateIndexMap);
+    return backtrack(distanceMap, stateMap, encodingStates.getStateIndexMap());
+  }
+
+  private List<State> getStatesFromIntegers(List<Integer> encoded, List<StateList> states) {
+    List<Integer> stateLengths = states.stream()
+        .map(s -> s.getStates().stream().findFirst().get().size())
+        .collect(Collectors.toList());
+    return VectorUtils.createVariableLengthStateList(encoded, stateLengths);
   }
 
   private Double[][] initializeDistanceMap(int stateSize, int vectorSize) {
@@ -101,6 +108,7 @@ public class ViterbiDecoder {
   }
 
   private List<Integer> backtrack(Double[][] distanceMap, State[][] stateMap, Map<State, Integer> stateIndexMap) {
+    fillDistanceMap(distanceMap);
     int minIndex = getStartingIndex(distanceMap);
     List<Integer> response = new ArrayList<>();
     int previousStateIndex;
@@ -119,6 +127,16 @@ public class ViterbiDecoder {
     }
     Collections.reverse(response);
     return response;
+  }
+
+  private void fillDistanceMap(Double[][] distanceMap) {
+    for (int i = 0; i < distanceMap.length; i++) {
+      for (int j = 0; j < distanceMap[0].length; j++) {
+        if (distanceMap[i][j] == null) {
+          distanceMap[i][j] = Double.MAX_VALUE;
+        }
+      }
+    }
   }
 
   private int getStartingIndex(Double[][] distanceMap) {

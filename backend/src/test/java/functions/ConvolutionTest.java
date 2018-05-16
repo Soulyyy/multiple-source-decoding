@@ -28,10 +28,10 @@ class ConvolutionTest {
   @ParameterizedTest(name = "Input:\"{1}\", expected output:\"{2}\"")
   @MethodSource(value = "data")
   public void convolve(String matrixPath, String input, String expectedOutput) {
-    Matrix matrix = MatrixFactory.build(matrixPath);
+    List<Matrix> matrices = MatrixFactory.build(matrixPath);
     List<Integer> inputList = splitString(input);
     List<Integer> expectedList = splitString(expectedOutput);
-    Convolution convolution = new Convolution(matrix);
+    Convolution convolution = new Convolution(matrices.get(0));
     List<Integer> actualOutput = convolution.convolve(inputList);
     assertEquals(expectedList, actualOutput);
   }

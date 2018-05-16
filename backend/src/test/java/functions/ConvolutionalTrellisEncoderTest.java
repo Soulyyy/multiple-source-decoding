@@ -18,7 +18,8 @@ public class ConvolutionalTrellisEncoderTest {
 
   static Collection<Object[]> data() {
     return Arrays.asList(new Object[][]{
-        {"76.mat", Arrays.asList(1, 0, 1, 1, 0, 0), Arrays.asList(1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0)}
+        {"76.mat", Arrays.asList(1, 0, 1, 1, 0, 0), Arrays.asList(1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0)},
+        {"76-11.mat", Arrays.asList(1, 0, 1, 1, 0, 0), Arrays.asList(1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0)}
     });
   }
 
@@ -26,7 +27,7 @@ public class ConvolutionalTrellisEncoderTest {
   @ParameterizedTest(name = "Read matrix from file \" {0}\", encode \" {1}\", expect \" {2}\"")
   @MethodSource(value = "data")
   public void testEncoder(String matrixFileName, List<Integer> input, List<Integer> expectedOutput) {
-    Matrix matrix = MatrixFactory.build(matrixFileName);
+    List<Matrix> matrix = MatrixFactory.build(matrixFileName);
     Trellis trellis = TrellisFactory.build(matrix);
     ConvolutionalTrellisEncoder encoder = new ConvolutionalTrellisEncoder(trellis);
     List<Integer> encoded = encoder.encode(input);

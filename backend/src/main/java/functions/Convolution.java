@@ -30,4 +30,8 @@ public class Convolution {
         .map(i -> i % 2)
         .collect(Collectors.toList());
   }
+
+  public int getNumberOfColumns() {
+    return matrix.columns();
+  }
 }

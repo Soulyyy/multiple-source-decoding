@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -51,6 +52,38 @@ public class TrellisFactoryTest {
                 new Integer[]{1, 1}
             },
         }
+        },
+        {"76-11.mat"
+            , new Integer[][][]{
+            new Integer[][]{
+                new Integer[]{0, 0},
+                new Integer[]{0, 0},
+                new Integer[]{1, 1},
+                new Integer[]{1, 1},
+                new Integer[]{1, 1}
+            },
+            new Integer[][]{
+                new Integer[]{1, 0},
+                new Integer[]{0, 0},
+                new Integer[]{1, 1},
+                new Integer[]{1, 1},
+                new Integer[]{1, 1}
+            },
+            new Integer[][]{
+                new Integer[]{0, 1},
+                new Integer[]{0, 0},
+                new Integer[]{1, 1},
+                new Integer[]{1, 1},
+                new Integer[]{1, 1}
+            },
+            new Integer[][]{
+                new Integer[]{1, 1},
+                new Integer[]{0, 0},
+                new Integer[]{1, 1},
+                new Integer[]{1, 1},
+                new Integer[]{1, 1}
+            },
+        }
         }
     });
   }
@@ -59,8 +92,8 @@ public class TrellisFactoryTest {
   @ParameterizedTest(name = "Read matrix from file \"{0}}\" to generate trellis, expecting \"{1}\"")
   @MethodSource(value = "data")
   public void testTrellisFactory(String matrixFileName, Integer[][][] verificationArrays) {
-    Matrix matrix = MatrixFactory.build(matrixFileName);
-    Trellis trellis = TrellisFactory.build(matrix);
+    List<Matrix> matrices = MatrixFactory.build(matrixFileName);
+    Trellis trellis = TrellisFactory.build(matrices);
     for (Integer[][] verificationArray : verificationArrays) {
       verifyNode(trellis, verificationArray);
     }

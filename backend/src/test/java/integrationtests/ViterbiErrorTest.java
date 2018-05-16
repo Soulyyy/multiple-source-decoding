@@ -37,15 +37,16 @@ public class ViterbiErrorTest {
   @ParameterizedTest(name = "Using matrix \"{0}\" and channel error rate \"{1}\".")
   @MethodSource(value = "data")
   public void testViterbiErrors(String matrixName, double errorRate) {
-    Matrix matrix = MatrixFactory.build(matrixName);
+    List<Matrix> matrix = MatrixFactory.build(matrixName);
     Trellis trellis = TrellisFactory.build(matrix);
     ConvolutionalTrellisEncoder trellisEncoder = new ConvolutionalTrellisEncoder(trellis);
+    //List<StateList> states =
     ViterbiDecoder viterbiDecoder = new ViterbiDecoder(trellis);
 
     List<Integer> initialVector = VectorUtils.generateUniformlyRandomVector(VECTOR_LENGTH);
     List<Integer> encodedVector = trellisEncoder.encode(initialVector);
     List<Integer> vectorWithErrors = VectorUtils.createVectorErrors(encodedVector, errorRate);
-    List<Integer> decodedVector = viterbiDecoder.decode(matrix.rows(), vectorWithErrors, errorRate);
+    List<Integer> decodedVector = viterbiDecoder.decode(vectorWithErrors, errorRate);
 
     long numberOfErrors = ErrorCounter.numberOfErrors(initialVector, decodedVector);
     System.out.println(numberOfErrors);
