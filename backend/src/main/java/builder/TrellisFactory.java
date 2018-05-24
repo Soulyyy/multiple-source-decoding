@@ -33,12 +33,12 @@ public class TrellisFactory {
     Matrix nextMatrix = matrices.get(0);
     for (int i = 1; i < matrices.size(); i++) {
       nextMatrix = matrices.get(i % matrices.size());
-      Set<TrellisNode> currentNodes = generateTrellisNodes(matrix.rows());
-      mapTrellisNodes(matrix, previousNodes, currentNodes, matrix.columns() - nextMatrix.columns());
+      Set<TrellisNode> currentNodes = generateTrellisNodes(nextMatrix.rows());
+      mapTrellisNodes(matrix, nextMatrix, previousNodes, currentNodes);
       matrix = matrices.get(i % matrices.size());
       previousNodes = currentNodes;
     }
-    mapTrellisNodes(matrix, previousNodes, initialNodes, matrix.columns() - nextMatrix.columns());
+    mapTrellisNodes(matrix, nextMatrix, previousNodes, initialNodes);
     return new Trellis(initialNodes, getStateLists(matrices));
   }
 
@@ -62,17 +62,17 @@ public class TrellisFactory {
     }
   }*/
 
-  private static void mapTrellisNodes(Matrix matrix, Set<TrellisNode> sourceNodes, Set<TrellisNode> targetNodes, int matrixColumnDif) {
+  private static void mapTrellisNodes(Matrix matrix, Matrix secondMatrix, Set<TrellisNode> sourceNodes, Set<TrellisNode> targetNodes) {
     final Convolution convolution = new Convolution(matrix);
     for (TrellisNode sourceNode : sourceNodes) {
-      addTrellisEdges(sourceNode, targetNodes, convolution, matrixColumnDif);
+      addTrellisEdges(sourceNode, targetNodes, convolution, secondMatrix);
     }
   }
 
-  private static void addTrellisEdges(TrellisNode sourceNode, Set<TrellisNode> targetNodes, Convolution convolution, int matrixColumnDif) {
+  private static void addTrellisEdges(TrellisNode sourceNode, Set<TrellisNode> targetNodes, Convolution convolution, Matrix secondMatrix) {
     Map<State, TrellisEdge> mappings = new HashMap<>();
 
-    List<List<Integer>> allPermutationStates = PermutationGenerator.generateExpandedBinaryValues(Math.max(1, matrixColumnDif));
+    List<List<Integer>> allPermutationStates = PermutationGenerator.generateExpandedBinaryValues(Math.max(1, convolution.getNumberOfColumns() - secondMatrix.columns()));
     for (List<Integer> permutationPrefix : allPermutationStates) {
       //This line is wrong. Might want to reduce per dif, but why in the first place. need to think heavily
       List<Integer> codeword = Stream.concat(permutationPrefix.stream(), sourceNode.getState().asList().stream()).collect(Collectors.toList());
@@ -83,7 +83,7 @@ public class TrellisFactory {
         //if(nodeState.subList(0, codeword.size()).equals(codeword)) {
         if (codeword.size() < nodeState.size() || codeword.subList(0, targetNode.getState().size()).equals(targetNode.getState().asList())) {
           TrellisEdge edge = new TrellisEdge(convolution.convolve(convolutionCodeword), sourceNode, targetNode);
-          mappings.put(new State(Collections.singletonList(permutationPrefix.get(0))), edge);
+          mappings.put(new State(convolutionCodeword.subList(0, 1)), edge);
         }
       }
     }

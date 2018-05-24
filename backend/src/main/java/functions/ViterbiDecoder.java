@@ -46,8 +46,9 @@ public class ViterbiDecoder {
     log.info("Viterbi decoding using states: {} for vector: {}", states, encoded);
 
     StateList encodingStates = states.get(0);
-    Double[][] distanceMap = initializeDistanceMap(encodingStates.size(), encoded.size());
-    State[][] stateMap = new State[encodingStates.size()][encoded.size()];
+    int maxEncodingStatesSize = states.stream().mapToInt(StateList::size).max().getAsInt();
+    Double[][] distanceMap = initializeDistanceMap(maxEncodingStatesSize, encoded.size());
+    State[][] stateMap = new State[maxEncodingStatesSize][encoded.size()];
     Queue<QueueNode> nodeQueue = initializeQueue(encodingStates);
 
     while (!nodeQueue.isEmpty()) {
@@ -57,7 +58,8 @@ public class ViterbiDecoder {
           TrellisEdge edge = edgeEntry.getValue();
           double distance = computeDistance(edge.getParityBits(), encoded.get(currentNode.depth).asList(), errorRate);
           encodingStates = states.get(currentNode.depth % states.size());
-          int stateIndex = encodingStates.getIndex(edge.getTargetNode().getState());
+          StateList nextStates = states.get((currentNode.depth + 1) % states.size());
+          int stateIndex = nextStates.getIndex(edge.getTargetNode().getState());
           Double expectedDistance = distanceMap[stateIndex][currentNode.depth + 1];
           Double newDistance = distanceMap[encodingStates.getIndex(currentNode.trellisNode.getState())][currentNode.depth] + distance;
           if (expectedDistance == null || newDistance < expectedDistance) {
@@ -69,7 +71,7 @@ public class ViterbiDecoder {
       }
     }
     log.info("Populated distances with {}", (Object[]) distanceMap);
-    return backtrack(distanceMap, stateMap, encodingStates.getStateIndexMap());
+    return backtrack(distanceMap, stateMap, states);
   }
 
   private List<State> getStatesFromIntegers(List<Integer> encoded, List<StateList> states) {
@@ -120,7 +122,8 @@ public class ViterbiDecoder {
     return hammingDistance * (1 - errorRate) + errorRate * (state.size() - hammingDistance);
   }
 
-  private List<Integer> backtrack(Double[][] distanceMap, State[][] stateMap, Map<State, Integer> stateIndexMap) {
+  private List<Integer> backtrack(Double[][] distanceMap, State[][] stateMap, List<StateList> states) {
+    int maxStateLength = states.stream().mapToInt(StateList::size).max().getAsInt();
     fillDistanceMap(distanceMap);
     int minIndex = getStartingIndex(distanceMap);
     List<Integer> response = new ArrayList<>();
@@ -128,7 +131,9 @@ public class ViterbiDecoder {
     int currentStateIndex = minIndex;
     for (int i = 0; i < stateMap[0].length; i++) {
       previousStateIndex = currentStateIndex;
-      currentStateIndex = stateIndexMap.get(stateMap[previousStateIndex][stateMap[0].length - 1 - i]);
+      StateList curState = states.get((i + 1) % states.size());
+      currentStateIndex = curState.getStateIndexMap().get(stateMap[previousStateIndex][stateMap[0].length - 1 - i]);
+      //currentStateIndex *= maxStateLength - curState.size();
       int decodedValue;
       if (currentStateIndex == previousStateIndex) {
         decodedValue = stateMap.length / 2 > currentStateIndex ? 0 : 1;

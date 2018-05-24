@@ -34,4 +34,8 @@ public class Convolution {
   public int getNumberOfColumns() {
     return matrix.columns();
   }
+
+  public int getNumberOfRows() {
+    return matrix.rows();
+  }
 }

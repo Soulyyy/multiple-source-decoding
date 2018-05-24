@@ -21,7 +21,7 @@ public class ViterbiDecoderTest {
     return Arrays.asList(new Object[][]{
         {"76.mat", Arrays.asList(1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0), Arrays.asList(1, 0, 1, 1, 0, 0)},
         {"76.mat", Arrays.asList(1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1), Arrays.asList(1, 0, 1, 1, 0, 0)},
-        //{"76-111.mat", Arrays.asList(1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1), Arrays.asList(1, 0, 1, 1, 0, 0)},
+        {"76-111.mat", Arrays.asList(1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0), Arrays.asList(1, 0, 1, 0, 0, 0)},
         //{"111-76.mat", Arrays.asList(1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1), Arrays.asList(1, 0, 1, 1, 0, 0)},
         {"76-11.mat", Arrays.asList(1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0), Arrays.asList(1, 0, 1, 1, 0, 0)},
         {"76.mat", Arrays.asList(1, 1), Collections.singletonList(1)},

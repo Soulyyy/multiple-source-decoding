@@ -20,6 +20,38 @@ public class TrellisFactoryTest {
 
   static Collection<Object[]> data() {
     return Arrays.asList(new Object[][]{
+        {"76-111.mat"
+            , new Integer[][][]{
+            new Integer[][]{
+                new Integer[]{0, 0},
+                new Integer[]{0, 0},
+                new Integer[]{0, 0, 0},
+                new Integer[]{1, 1},
+                new Integer[]{1, 0, 0}
+            },
+            new Integer[][]{
+                new Integer[]{1, 0},
+                new Integer[]{1, 1},
+                new Integer[]{0, 1, 0},
+                new Integer[]{0, 0},
+                new Integer[]{1, 1, 0}
+            },
+            new Integer[][]{
+                new Integer[]{0, 1},
+                new Integer[]{1, 0},
+                new Integer[]{0, 0, 1},
+                new Integer[]{0, 1},
+                new Integer[]{1, 0, 1}
+            },
+            new Integer[][]{
+                new Integer[]{1, 1},
+                new Integer[]{0, 1},
+                new Integer[]{0, 1, 1},
+                new Integer[]{1, 0},
+                new Integer[]{1, 1, 1}
+            },
+        }
+        },
         {"11-76.mat"
             , new Integer[][][]{
             new Integer[][]{
@@ -132,7 +164,6 @@ public class TrellisFactoryTest {
 
   private void verifyNode(Trellis trellis, Integer[][] verificationArray) {
     TrellisNode node = trellis.getNode(Arrays.asList(verificationArray[0]));
-    System.out.println(node);
     TrellisEdge zeroEdge = node.getEdge(Collections.singletonList(0));
     assertEquals(Arrays.asList(verificationArray[1]), zeroEdge.getParityBits());
     assertEquals(Arrays.asList(verificationArray[2]), zeroEdge.getTargetNode().getState().asList());
