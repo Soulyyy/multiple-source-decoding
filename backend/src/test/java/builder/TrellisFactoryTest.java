@@ -20,7 +20,7 @@ public class TrellisFactoryTest {
 
   static Collection<Object[]> data() {
     return Arrays.asList(new Object[][]{
-        {"76-111.mat"
+        {"76-777.mat"
             , new Integer[][][]{
             new Integer[][]{
                 new Integer[]{0, 0},
