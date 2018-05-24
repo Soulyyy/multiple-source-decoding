@@ -31,6 +31,10 @@ public class Matrix {
         .collect(Collectors.toList());
   }
 
+  public Integer[][] asArray() {
+    return matrix;
+  }
+
   public Integer get(int i, int j) {
     return matrix[i][j];
   }

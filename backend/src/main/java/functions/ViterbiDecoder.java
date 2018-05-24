@@ -96,6 +96,19 @@ public class ViterbiDecoder {
     return nodeQueue;
   }
 
+  private List<Integer> getComparatorBits(TrellisEdge edge, List<State> encoded, int length, int depth) {
+    List<Integer> bits = encoded.get(depth).asList();
+    int dif = bits.size() - length;
+    if (dif <= 0) {
+      return bits.subList(-1 * dif, bits.size());
+    }
+    else {
+      System.out.println("peetis");
+      //edge.getPreviousNode().get
+    }
+    return bits;
+  }
+
   private Map<State, Integer> generateIndexMap(StateList stateList) {
     Map<State, Integer> stateMap = new HashMap<>();
     IntStream.range(0, stateList.size()).forEach(i -> stateMap.put(stateList.getState(i), i));

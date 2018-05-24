@@ -5,20 +5,22 @@ import java.util.Map;
 import java.util.Objects;
 
 import data.State;
+import lombok.Getter;
+import lombok.Setter;
 
 public class TrellisNode {
 
-
+  @Getter
   private final State state;
 
   private Map<State, TrellisEdge> edges;
 
+  @Getter
+  @Setter
+  private List<Integer> history;
+
   public TrellisNode(State state) {
     this.state = state;
-  }
-
-  public State getState() {
-    return state;
   }
 
   public Map<State, TrellisEdge> getEdges() {

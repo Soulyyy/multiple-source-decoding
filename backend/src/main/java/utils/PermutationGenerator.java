@@ -27,6 +27,15 @@ public class PermutationGenerator {
     return permutations;
   }
 
+  public static List<List<Integer>> generateExpandedBinaryValues(int lenght) {
+    List<Integer> zeroes = new ArrayList<>(Collections.nCopies(lenght, 0));
+    List<Integer> ones = new ArrayList<>(Collections.nCopies(lenght, 1));
+    List<List<Integer>> expandedPermutations = new ArrayList<>();
+    expandedPermutations.add(zeroes);
+    expandedPermutations.add(ones);
+    return expandedPermutations;
+  }
+
   private static List<List<Integer>> getBinaryExpandedLists(List<Integer> list) {
     List<Integer> zeroAdded = new ArrayList<>(list);
     zeroAdded.add(0);

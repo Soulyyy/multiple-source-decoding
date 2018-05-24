@@ -14,8 +14,13 @@ public class TrellisEdge {
     this.targetNode = targetNode;
   }
 
+
   public List<Integer> getParityBits() {
     return parityBits;
+  }
+
+  public TrellisNode getPreviousNode() {
+    return previousNode;
   }
 
   public TrellisNode getTargetNode() {
