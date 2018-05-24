@@ -2,13 +2,11 @@ package builder;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -22,6 +20,38 @@ public class TrellisFactoryTest {
 
   static Collection<Object[]> data() {
     return Arrays.asList(new Object[][]{
+        {"11-76.mat"
+            , new Integer[][][]{
+            new Integer[][]{
+                new Integer[]{0, 0},
+                new Integer[]{0, 0},
+                new Integer[]{0, 0},
+                new Integer[]{1, 1},
+                new Integer[]{1, 0}
+            },
+            new Integer[][]{
+                new Integer[]{1, 0},
+                new Integer[]{0, 0},
+                new Integer[]{0, 1},
+                new Integer[]{1, 1},
+                new Integer[]{1, 1}
+            },
+            new Integer[][]{
+                new Integer[]{0, 1},
+                new Integer[]{0, 0},
+                new Integer[]{0, 0},
+                new Integer[]{1, 1},
+                new Integer[]{1, 0}
+            },
+            new Integer[][]{
+                new Integer[]{1, 1},
+                new Integer[]{0, 0},
+                new Integer[]{0, 1},
+                new Integer[]{1, 1},
+                new Integer[]{1, 1}
+            },
+        }
+        },
         {"76-11.mat"
             , new Integer[][][]{
             new Integer[][]{

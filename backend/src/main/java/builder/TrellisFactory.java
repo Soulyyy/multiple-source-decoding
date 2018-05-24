@@ -77,7 +77,7 @@ public class TrellisFactory {
       //This line is wrong. Might want to reduce per dif, but why in the first place. need to think heavily
       List<Integer> codeword = Stream.concat(permutationPrefix.stream(), sourceNode.getState().asList().stream()).collect(Collectors.toList());
       List<Integer> convolutionCodeword = codeword.subList(permutationPrefix.size() - 1, convolution.getNumberOfColumns() + permutationPrefix.size() - 1);
-      codeword = codeword.subList(0, convolution.getNumberOfColumns());
+      //codeword = codeword.subList(0, convolution.getNumberOfColumns());
       for (TrellisNode targetNode : targetNodes) {
         List<Integer> nodeState = targetNode.getState().asList();
         //if(nodeState.subList(0, codeword.size()).equals(codeword)) {
