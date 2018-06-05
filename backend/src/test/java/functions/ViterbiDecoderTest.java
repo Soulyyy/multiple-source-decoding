@@ -22,7 +22,7 @@ public class ViterbiDecoderTest {
         {"76.mat", Arrays.asList(1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0), Arrays.asList(1, 0, 1, 1, 0, 0)},
         {"76.mat", Arrays.asList(1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1), Arrays.asList(1, 0, 1, 1, 0, 0)},
         {"76-777.mat", Arrays.asList(1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0), Arrays.asList(1, 0, 1, 0, 0, 0)},
-        //{"777-76.mat", Arrays.asList(1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1), Arrays.asList(1, 0, 1, 1, 0, 0)},
+        {"777-76.mat", Arrays.asList(1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1), Arrays.asList(1, 0, 1, 0, 1, 0)},
         {"76-11.mat", Arrays.asList(1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0), Arrays.asList(1, 0, 1, 1, 0, 0)},
         {"76.mat", Arrays.asList(1, 1), Collections.singletonList(1)},
         {"76.mat", Collections.singletonList(1), Collections.emptyList()},

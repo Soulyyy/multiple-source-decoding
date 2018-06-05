@@ -20,6 +20,38 @@ public class TrellisFactoryTest {
 
   static Collection<Object[]> data() {
     return Arrays.asList(new Object[][]{
+        {"777-76.mat"
+            , new Integer[][][]{
+            new Integer[][]{
+                new Integer[]{0, 0, 0},
+                new Integer[]{0, 0, 0},
+                new Integer[]{0, 0},
+                new Integer[]{1, 1, 1},
+                new Integer[]{1, 0}
+            },
+            new Integer[][]{
+                new Integer[]{1, 0, 0},
+                new Integer[]{1, 1, 1},
+                new Integer[]{0, 1},
+                new Integer[]{0, 0, 0},
+                new Integer[]{1, 1}
+            },
+            new Integer[][]{
+                new Integer[]{0, 1, 0},
+                new Integer[]{1, 1, 1},
+                new Integer[]{0, 0},
+                new Integer[]{0, 0, 0},
+                new Integer[]{1, 0}
+            },
+            new Integer[][]{
+                new Integer[]{1, 1, 0},
+                new Integer[]{0, 0, 0},
+                new Integer[]{0, 1},
+                new Integer[]{1, 1, 1},
+                new Integer[]{1, 1}
+            },
+        }
+        },
         {"76-777.mat"
             , new Integer[][][]{
             new Integer[][]{

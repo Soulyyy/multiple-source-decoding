@@ -1,12 +1,8 @@
 package functions;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import data.State;
 import data.trellis.Trellis;
@@ -22,7 +18,8 @@ public class ConvolutionalTrellisEncoder {
   }
 
   public List<Integer> encode(List<Integer> integers) {
-    TrellisNode activeNode = trellis.getNode(new State(Arrays.asList(0, 0)));
+    int arraySize = trellis.getAllNodes().stream().findFirst().map(i -> i.getState().size()).get();
+    TrellisNode activeNode = trellis.getNode(new State(Collections.nCopies(arraySize, 0)));
     List<Integer> encoded = new ArrayList<>();
     for (Integer integer : integers) {
       TrellisEdge edge = activeNode.getEdge(new State(Collections.singletonList(integer)));

@@ -1,20 +1,14 @@
 package functions;
 
 import static utils.VectorUtils.computeHammingDistance;
-import static utils.VectorUtils.createStateList;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Stack;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -22,7 +16,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import data.ProbabilityMap;
 import data.State;
 import data.StateList;
 import data.trellis.Trellis;
@@ -70,7 +63,6 @@ public class ViterbiDecoder {
         }
       }
     }
-    log.info("Populated distances with {}", (Object[]) distanceMap);
     return backtrack(distanceMap, stateMap, states);
   }
 
@@ -98,45 +90,26 @@ public class ViterbiDecoder {
     return nodeQueue;
   }
 
-  private List<Integer> getComparatorBits(TrellisEdge edge, List<State> encoded, int length, int depth) {
-    List<Integer> bits = encoded.get(depth).asList();
-    int dif = bits.size() - length;
-    if (dif <= 0) {
-      return bits.subList(-1 * dif, bits.size());
-    }
-    else {
-      System.out.println("peetis");
-      //edge.getPreviousNode().get
-    }
-    return bits;
-  }
-
-  private Map<State, Integer> generateIndexMap(StateList stateList) {
-    Map<State, Integer> stateMap = new HashMap<>();
-    IntStream.range(0, stateList.size()).forEach(i -> stateMap.put(stateList.getState(i), i));
-    return stateMap;
-  }
-
   private double computeDistance(List<Integer> state, List<Integer> expected, double errorRate) {
     long hammingDistance = computeHammingDistance(state, expected);
     return hammingDistance * (1 - errorRate) + errorRate * (state.size() - hammingDistance);
   }
 
   private List<Integer> backtrack(Double[][] distanceMap, State[][] stateMap, List<StateList> states) {
-    int maxStateLength = states.stream().mapToInt(StateList::size).max().getAsInt();
     fillDistanceMap(distanceMap);
     int minIndex = getStartingIndex(distanceMap);
     List<Integer> response = new ArrayList<>();
     int previousStateIndex;
     int currentStateIndex = minIndex;
+    StateList curState = states.get(0);
     for (int i = 0; i < stateMap[0].length; i++) {
+      StateList previousState = curState;
       previousStateIndex = currentStateIndex;
-      StateList curState = states.get((i + 1) % states.size());
+      curState = states.get((i + 1) % states.size());
       currentStateIndex = curState.getStateIndexMap().get(stateMap[previousStateIndex][stateMap[0].length - 1 - i]);
-      //currentStateIndex *= maxStateLength - curState.size();
       int decodedValue;
       if (currentStateIndex == previousStateIndex) {
-        decodedValue = stateMap.length / 2 > currentStateIndex ? 0 : 1;
+        decodedValue = previousState.size() / 2 > currentStateIndex ? 0 : 1;
       }
       else {
         decodedValue = currentStateIndex < previousStateIndex ? 1 : 0;
