@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import data.Matrix;
+import data.MatrixImpl;
 import utils.FileUtils;
 
 public class MatrixFactory {
 
-  public static List<Matrix> build(String path) {
+  public static List<MatrixImpl> build(String path) {
     try {
       List<List<String>> matrixInputs = splitMatricesToLines(path);
       return matrixInputs.stream()
@@ -28,7 +28,7 @@ public class MatrixFactory {
 
   }
 
-  public static List<Matrix> build(List<List<Integer>> numberList) {
+  public static List<MatrixImpl> build(List<List<Integer>> numberList) {
     return numberList.stream().map(MatrixFactory::buildMatrix).collect(Collectors.toList());
   }
 
@@ -49,7 +49,7 @@ public class MatrixFactory {
     return matrices;
   }
 
-  static Matrix buildMatrix(Stream<String> contents) {
+  static MatrixImpl buildMatrix(Stream<String> contents) {
     Integer[][] integerMatrix = contents.map(s -> s.split(","))
         .map(a -> Arrays.stream(a)
             .mapToInt(Integer::parseInt)
@@ -57,14 +57,14 @@ public class MatrixFactory {
             .toArray(Integer[]::new))
         .toArray(Integer[][]::new);
 
-    Matrix matrix = new Matrix(integerMatrix);
+    MatrixImpl matrix = new MatrixImpl(integerMatrix);
     if (!validateLength(integerMatrix)) {
       throw new IllegalArgumentException("Matrix size not uniform:\n" + matrix.toString(), null);
     }
     return matrix;
   }
 
-  private static Matrix buildMatrix(List<Integer> numbers) {
+  private static MatrixImpl buildMatrix(List<Integer> numbers) {
     List<List<Integer>> reverseRows = new ArrayList<>();
     int maxLength = -1;
     for (int number : numbers) {
@@ -80,7 +80,7 @@ public class MatrixFactory {
         integerMatrix[i][integerMatrix[0].length - j - 1] = reverseRows.get(i).get(j);
       }
     }
-    return new Matrix(integerMatrix);
+    return new MatrixImpl(integerMatrix);
   }
 
   private static boolean validateLength(Integer[][] matrix) {

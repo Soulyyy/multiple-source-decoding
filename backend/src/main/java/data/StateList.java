@@ -44,13 +44,6 @@ public class StateList {
     return stateIndexMap.get(state);
   }
 
-  public int getStateLength() {
-    State state = states.get(0);
-    if (state == null) {
-      throw new IllegalStateException("State cannot be null");
-    }
-    return states.get(0).size();
-  }
 
   private Map<State, Integer> generateIndexMap(List<State> states) {
     Map<State, Integer> stateMap = new HashMap<>();

@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import data.Matrix;
+import data.MatrixImpl;
 
 
 public class Convolution {
 
-  private Matrix matrix;
+  private MatrixImpl matrix;
 
-  public Convolution(Matrix matrix) {
+  public Convolution(MatrixImpl matrix) {
     this.matrix = matrix;
   }
 

@@ -12,7 +12,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import builder.MatrixFactory;
 import builder.TrellisFactory;
-import data.Matrix;
+import data.MatrixImpl;
 import data.trellis.Trellis;
 
 public class ViterbiDecoderTest {
@@ -34,7 +34,7 @@ public class ViterbiDecoderTest {
   @ParameterizedTest(name = "Read matrix from file \" {0}\", encode \" {1}\", expect \" {2}\"")
   @MethodSource(value = "data")
   public void testEncoder(String matrixFileName, List<Integer> input, List<Integer> expectedOutput) {
-    List<Matrix> matrices = MatrixFactory.build(matrixFileName);
+    List<MatrixImpl> matrices = MatrixFactory.build(matrixFileName);
     Trellis trellis = TrellisFactory.build(matrices);
     ViterbiDecoder decoder = new ViterbiDecoder(trellis);
     List<Integer> decoded = decoder.decode(input, 0.0);

@@ -4,13 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Stack;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.apache.commons.collections4.CollectionUtils;
-
-import data.Matrix;
 import data.State;
 
 public class VectorUtils {
@@ -54,14 +50,6 @@ public class VectorUtils {
       int curLength = lengths.get(lengthsIndex);
       vectorStartIndex = vectorEndIndex;
       vectorEndIndex += curLength;
-    }
-    return states;
-  }
-
-  public static List<State> createStateList(List<Integer> encodedInput, int length) {
-    List<State> states = new ArrayList<>();
-    for (int i = 0; i < encodedInput.size() / length; i++) {
-      states.add(new State(encodedInput.subList(i * length, i * length + length)));
     }
     return states;
   }

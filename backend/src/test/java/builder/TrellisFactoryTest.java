@@ -11,7 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import data.Matrix;
+import data.MatrixImpl;
 import data.trellis.Trellis;
 import data.trellis.TrellisEdge;
 import data.trellis.TrellisNode;
@@ -187,7 +187,7 @@ public class TrellisFactoryTest {
   @ParameterizedTest(name = "Read matrix from file \"{0}\" to generate trellis, expecting \"{1}\"")
   @MethodSource(value = "data")
   public void testTrellisFactory(String matrixFileName, Integer[][][] verificationArrays) {
-    List<Matrix> matrices = MatrixFactory.build(matrixFileName);
+    List<MatrixImpl> matrices = MatrixFactory.build(matrixFileName);
     Trellis trellis = TrellisFactory.build(matrices);
     for (Integer[][] verificationArray : verificationArrays) {
       verifyNode(trellis, verificationArray);

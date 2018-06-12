@@ -11,7 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import data.Matrix;
+import data.MatrixImpl;
 
 public class MatrixFactoryTest {
 
@@ -40,7 +40,7 @@ public class MatrixFactoryTest {
   @MethodSource(value = "data")
   public void testMultiMatrixFactoryFile(String path, List<String> expected) {
     try {
-      List<Matrix> matrices = MatrixFactory.build(path);
+      List<MatrixImpl> matrices = MatrixFactory.build(path);
       Assertions.assertEquals(expected.size(), matrices.size());
       for (int i = 0; i < matrices.size(); i++) {
         try {
@@ -60,7 +60,7 @@ public class MatrixFactoryTest {
   @ParameterizedTest(name = "Read list \"{0}}\" as a numbers, expecting content {1}")
   @MethodSource(value = "integerData")
   public void testMultiMatrixFactoryIntegers(List<List<Integer>> matrixNumbers, List<String> expected) {
-    List<Matrix> matrices = MatrixFactory.build(matrixNumbers);
+    List<MatrixImpl> matrices = MatrixFactory.build(matrixNumbers);
     Assertions.assertEquals(expected.size(), matrices.size());
     for (int i = 0; i < matrices.size(); i++) {
       try {

@@ -11,7 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import builder.MatrixFactory;
-import data.Matrix;
+import data.MatrixImpl;
 
 class ConvolutionTest {
 
@@ -28,7 +28,7 @@ class ConvolutionTest {
   @ParameterizedTest(name = "Input:\"{1}\", expected output:\"{2}\"")
   @MethodSource(value = "data")
   public void convolve(String matrixPath, String input, String expectedOutput) {
-    List<Matrix> matrices = MatrixFactory.build(matrixPath);
+    List<MatrixImpl> matrices = MatrixFactory.build(matrixPath);
     List<Integer> inputList = splitString(input);
     List<Integer> expectedList = splitString(expectedOutput);
     Convolution convolution = new Convolution(matrices.get(0));

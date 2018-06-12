@@ -9,7 +9,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import builder.MatrixFactory;
 import builder.TrellisFactory;
-import data.Matrix;
+import data.MatrixImpl;
 import data.trellis.Trellis;
 import functions.ConvolutionalTrellisEncoder;
 import functions.ViterbiDecoder;
@@ -37,7 +37,7 @@ public class ViterbiErrorTest {
   @ParameterizedTest(name = "Using matrix \"{0}\" and channel error rate \"{1}\".")
   @MethodSource(value = "data")
   public void testViterbiErrors(String matrixName, double errorRate) {
-    List<Matrix> matrix = MatrixFactory.build(matrixName);
+    List<MatrixImpl> matrix = MatrixFactory.build(matrixName);
     Trellis trellis = TrellisFactory.build(matrix);
     ConvolutionalTrellisEncoder trellisEncoder = new ConvolutionalTrellisEncoder(trellis);
     //List<StateList> states =

@@ -11,7 +11,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import builder.MatrixFactory;
 import builder.TrellisFactory;
-import data.Matrix;
+import data.MatrixImpl;
 import data.trellis.Trellis;
 
 public class ConvolutionalTrellisEncoderTest {
@@ -29,7 +29,7 @@ public class ConvolutionalTrellisEncoderTest {
   @ParameterizedTest(name = "Read matrix from file \" {0}\", encode \" {1}\", expect \" {2}\"")
   @MethodSource(value = "data")
   public void testEncoder(String matrixFileName, List<Integer> input, List<Integer> expectedOutput) {
-    List<Matrix> matrix = MatrixFactory.build(matrixFileName);
+    List<MatrixImpl> matrix = MatrixFactory.build(matrixFileName);
     Trellis trellis = TrellisFactory.build(matrix);
     ConvolutionalTrellisEncoder encoder = new ConvolutionalTrellisEncoder(trellis);
     List<Integer> encoded = encoder.encode(input);

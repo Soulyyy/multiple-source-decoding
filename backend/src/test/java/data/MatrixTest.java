@@ -27,7 +27,7 @@ public class MatrixTest {
   @ParameterizedTest()
   @MethodSource(value = "rowData")
   public void testGetRow(Integer[][] integerMatrix, int rowCount, Integer[][] rows) {
-    Matrix matrix = new Matrix(integerMatrix);
+    MatrixImpl matrix = new MatrixImpl(integerMatrix);
     assertEquals(rowCount, matrix.rows());
     IntStream.range(0, matrix.rows()).forEach(i -> assertEquals(Arrays.asList(rows[i]), matrix.getRow(i)));
 
@@ -38,7 +38,7 @@ public class MatrixTest {
   @ParameterizedTest()
   @MethodSource(value = "columnData")
   public void testGetColumn(Integer[][] integerMatrix, int columnCount, Integer[][] columns) {
-    Matrix matrix = new Matrix(integerMatrix);
+    MatrixImpl matrix = new MatrixImpl(integerMatrix);
     assertEquals(columnCount, matrix.columns());
     IntStream.range(0, matrix.columns()).forEach(i -> assertEquals(Arrays.asList(columns[i]), matrix.getColumn(i)));
   }
