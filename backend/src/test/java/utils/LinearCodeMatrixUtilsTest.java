@@ -1,5 +1,6 @@
 package utils;
 
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -29,6 +30,14 @@ class LinearCodeMatrixUtilsTest {
   @Test
   public void testGeneratorParityProduct() {
     MatrixImpl generatorMatrix = MatrixFactory.build("743hamming.mat").get(0);
-    MatrixImpl parityCheckMatrix = MatrixFactory.build("374hamming.mat").get(0);
+    MatrixImpl parityCheckMatrix = LinearCodeMatrixUtils.getParityCheckMatrix(generatorMatrix);
+    MatrixImpl result = MatrixUtils.multiply(generatorMatrix, MatrixUtils.transpose(parityCheckMatrix));
+    Integer[][] expectedIntegerMatrix = IntStream.range(0, generatorMatrix.rows())
+        .mapToObj(r -> IntStream.range(0, parityCheckMatrix
+            .rows()).mapToObj(i -> 0)
+            .toArray(Integer[]::new))
+        .toArray(Integer[][]::new);
+    MatrixImpl expected = new MatrixImpl(expectedIntegerMatrix);
+    Assertions.assertEquals(expected, result);
   }
 }

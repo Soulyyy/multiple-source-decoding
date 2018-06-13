@@ -22,7 +22,7 @@ public class MatrixUtils {
         for (int h = 0; h < first.columns(); h++) {
           element += first.get(i, h) * second.get(h, j);
         }
-        multiplicationMatrix[i][j] = element;
+        multiplicationMatrix[i][j] = (element  % 2);
       }
     }
     return new MatrixImpl(multiplicationMatrix);
