@@ -19,10 +19,14 @@
     <bytecodeTargetLevel>
       <module name="backend_main" target="1.8" />
       <module name="backend_test" target="1.8" />
+      <module name="boot-frontend-frontend_main" target="1.8" />
+      <module name="boot-frontend-frontend_test" target="1.8" />
       <module name="boot-frontend_main" target="1.8" />
       <module name="boot-frontend_test" target="1.8" />
       <module name="frontend_main" target="1.8" />
       <module name="frontend_test" target="1.8" />
+      <module name="multiple-source-decoding-frontend_main" target="1.8" />
+      <module name="multiple-source-decoding-frontend_test" target="1.8" />
       <module name="multiple-source-decoding_main" target="1.8" />
       <module name="multiple-source-decoding_test" target="1.8" />
     </bytecodeTargetLevel>

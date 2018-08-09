@@ -3,4 +3,3 @@ rootProject.name = "multiple-source-decoding"
 include 'backend'
 include 'boot-frontend'
 include 'frontend'
-

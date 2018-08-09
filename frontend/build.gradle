@@ -1,0 +1,38 @@
+plugins {
+  id "com.moowork.node" version "1.2.0"
+}
+
+apply plugin: 'base'
+apply plugin: 'io.spring.dependency-management'
+
+buildDir = 'build'
+
+node {
+  version = '10.3.0'
+  download = true
+}
+
+task installJavascriptDependencies(type: Exec) {
+  inputs.file("package-lock.json")
+  inputs.file("package.json")
+  outputs.dir("node_modules")
+
+  commandLine "npm", "install"
+}
+
+task webpack(type: Exec) {
+  dependsOn installJavascriptDependencies
+  inputs.file("webpack.config.js")
+  inputs.dir("src/js")
+  outputs.dir("$buildDir/webpack/webjars")
+
+  commandLine "$projectDir/node_modules/.bin/webpack"
+}
+
+task copyFrontend(type: Copy) {
+  dependsOn webpack
+  from("build/webpack")
+  from("src/html")
+  from("src/css")
+  into("$buildDir/META-INF/resources")
+}

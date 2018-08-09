@@ -2,19 +2,36 @@ allprojects {
   group = "com.multisource"
   version = "1.0-SNAPSHOT"
 
+  buildscript {
+
+    ext {
+      springBootVersion = '2.0.2.RELEASE'
+    }
+
+    repositories {
+      mavenCentral()
+      maven { url 'https://repo.spring.io/libs-snapshot' }
+    }
+
+    dependencies {
+      classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+    }
+
+  }
+
   repositories {
     mavenCentral()
     jcenter()
   }
 
-}
-
-subprojects {
-
   apply plugin: 'java'
+  apply plugin: 'idea'
 
   sourceCompatibility = 1.8
   targetCompatibility = 1.8
+}
+
+subprojects {
 
   dependencies {
     compile 'org.springframework:spring-context:5.0.3.RELEASE'
@@ -29,4 +46,5 @@ subprojects {
 
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.16.20'
   }
+
 }
