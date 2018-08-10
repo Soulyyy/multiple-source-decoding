@@ -1,23 +1,31 @@
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+buildscript {
+
+  ext {
+    springBootVersion = '2.0.2.RELEASE'
+  }
+
+  repositories {
+    mavenCentral()
+    maven { url 'https://repo.spring.io/libs-snapshot' }
+  }
+
+  dependencies {
+    classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+  }
+
+}
+
+repositories {
+  mavenCentral()
+  jcenter()
+}
+
 allprojects {
   group = "com.multisource"
   version = "1.0-SNAPSHOT"
-
-  buildscript {
-
-    ext {
-      springBootVersion = '2.0.2.RELEASE'
-    }
-
-    repositories {
-      mavenCentral()
-      maven { url 'https://repo.spring.io/libs-snapshot' }
-    }
-
-    dependencies {
-      classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
-    }
-
-  }
 
   repositories {
     mavenCentral()
@@ -47,4 +55,24 @@ subprojects {
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.16.20'
   }
 
+}
+
+dependencies {
+  compile project(':boot-frontend')
+}
+
+springBoot {
+  mainClassName = 'com.multisource.Application'
+}
+
+bootJar {
+  dependsOn ":frontend:build"
+  requiresUnpack '**/boot-*.jar'
+  bootJar.enabled = true
+  archiveName = project.name + '-' + project.version + '.jar'
+
+  String path = project(':frontend').buildDir.path + '/META-INF/resources'
+  from(path) {
+    into('META-INF/resources')
+  }
 }

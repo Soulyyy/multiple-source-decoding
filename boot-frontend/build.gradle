@@ -1,8 +1,3 @@
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
-
-project.buildDir = parent.buildDir
-
 dependencies {
   compile project(':backend')
 
@@ -10,16 +5,4 @@ dependencies {
     exclude module: 'spring-boot-starter-logging'
   }
 
-}
-
-bootJar {
-  dependsOn ":frontend:copyFrontend"
-  bootJar.enabled = true
-  archiveName = parent.name + '-' + parent.version + '.jar'
-  mainClassName = 'com.multisource.Application'
-
-  String path = project(':frontend').buildDir.path + '/META-INF/resources'
-  from(path) {
-    into('META-INF/resources')
-  }
 }

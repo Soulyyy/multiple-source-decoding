@@ -36,3 +36,7 @@ task copyFrontend(type: Copy) {
   from("src/css")
   into("$buildDir/META-INF/resources")
 }
+
+build {
+  dependsOn copyFrontend
+}
