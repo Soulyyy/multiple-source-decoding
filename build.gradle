@@ -52,7 +52,7 @@ subprojects {
     testCompile 'org.junit.jupiter:junit-jupiter-params:5.0.3'
     testCompile 'org.junit.jupiter:junit-jupiter-api:5.0.3'
 
-    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.16.20'
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.2'
   }
 
 }
@@ -63,16 +63,4 @@ dependencies {
 
 springBoot {
   mainClassName = 'com.multisource.Application'
-}
-
-bootJar {
-  dependsOn ":frontend:build"
-  requiresUnpack '**/boot-*.jar'
-  bootJar.enabled = true
-  archiveName = project.name + '-' + project.version + '.jar'
-
-  String path = project(':frontend').buildDir.path + '/META-INF/resources'
-  from(path) {
-    into('META-INF/resources')
-  }
 }

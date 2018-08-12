@@ -1,5 +1,6 @@
 dependencies {
   compile project(':backend')
+  compile project(':frontend')
 
   compile('org.springframework.boot:spring-boot-starter-web:2.0.2.RELEASE') {
     exclude module: 'spring-boot-starter-logging'

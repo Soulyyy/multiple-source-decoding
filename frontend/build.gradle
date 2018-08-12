@@ -29,14 +29,10 @@ task webpack(type: Exec) {
   commandLine "$projectDir/node_modules/.bin/webpack"
 }
 
-task copyFrontend(type: Copy) {
+jar {
   dependsOn webpack
-  from("build/webpack")
-  from("src/html")
-  from("src/css")
-  into("$buildDir/META-INF/resources")
-}
 
-build {
-  dependsOn copyFrontend
+  into("META-INF/resources") {
+    from("$buildDir/webpack", "src/html", "src/css")
+  }
 }
